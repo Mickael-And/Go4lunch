@@ -11,6 +11,7 @@ android {
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
+        multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -32,8 +33,16 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    // MultiDex
+    implementation 'androidx.multidex:multidex:2.0.1'
+
     // Firebase
-    implementation 'com.google.firebase:firebase-analytics:17.3.0'
+    implementation 'com.google.firebase:firebase-core:17.3.0'
+    // FirebaseUI for authentification
+    implementation 'com.firebaseui:firebase-ui-auth:6.2.0'
+    // Facebook Login Support
+    implementation 'com.facebook.android:facebook-android-sdk:6.4.0'
+
 
     // AppCompat
     implementation 'androidx.appcompat:appcompat:1.1.0'

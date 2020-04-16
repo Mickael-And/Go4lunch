@@ -1,3 +1,17 @@
 <resources>
+    <!-- FACEBOOK PURPOSE -->
+    <string name="facebook_application_id" translatable="false">310405193271096</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb310405193271096</string>
+
     <string name="app_name">Go4Lunch</string>
+    <string name="app_title">Go4Lunch</string>
+    <string name="app_subtitle">Find a nice restaurant and invite your co-workers for lunch!</string>
+    <string name="text_fb_btn">Sign in with Facebook</string>
+    <string name="text_gle_btn">Sign in with Google</string>
+    <string name="restaurant_image_description">Restaurant image</string>
+    <string name="logo_image_description">Fork image</string>
+    <string name="connection_succeed">Connection succed</string>
+    <string name="error_authentification_canceled">Authentification canceled</string>
+    <string name="error_no_internet">No internet</string>
+    <string name="error_unknown_error">Unknown error</string>
 </resources>

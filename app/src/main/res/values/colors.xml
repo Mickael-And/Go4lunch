@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
+    <color name="colorPrimary">#FF5722</color>
+    <color name="colorPrimaryVariant">#E64A19</color>
+    <color name="colorSecondary">#22CBFF</color>
+    <color name="colorSecondaryVariant">#00B4FF</color>
+    <color name="colorSurface">#FFFFFF</color>
+    <color name="colorError">#B00020</color>
+    <color name="colorOnSecondary">#FFFFFF</color>
+    <color name="facebookColor">#507CC0</color>
+    <color name="googleColor">#DF4930</color>
+
 </resources>
