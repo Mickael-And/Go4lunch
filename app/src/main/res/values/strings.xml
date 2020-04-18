@@ -3,6 +3,11 @@
     <string name="facebook_application_id" translatable="false">310405193271096</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb310405193271096</string>
 
+    <!-- BOTTOM NAVIGATION ITEMS -->
+    <string name="bottom_navigation_map_restaurant_item">Map View</string>
+    <string name="bottom_navigation_list_restaurant_item">List View</string>
+    <string name="bottom_navigation_workmates_item">Workmates</string>
+
     <string name="app_name">Go4Lunch</string>
     <string name="app_title">Go4Lunch</string>
     <string name="app_subtitle">Find a nice restaurant and invite your co-workers for lunch!</string>

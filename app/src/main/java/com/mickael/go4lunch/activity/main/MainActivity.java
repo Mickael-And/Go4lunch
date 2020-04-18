@@ -1,8 +1,10 @@
 package com.mickael.go4lunch.activity.main;
 
 import android.content.Intent;
+import android.os.Bundle;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 
 import com.firebase.ui.auth.AuthUI;
@@ -10,14 +12,15 @@ import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.material.snackbar.Snackbar;
 import com.mickael.go4lunch.R;
-import com.mickael.go4lunch.activity.BaseActivity;
+import com.mickael.go4lunch.activity.map.MapActivity;
 
 import java.util.Collections;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends BaseActivity {
+public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.main_coordinator_Layout)
     CoordinatorLayout mainCoordinatorLayout;
@@ -28,8 +31,10 @@ public class MainActivity extends BaseActivity {
     private static final int CODE_SIGN_IN_ACTIVITY = 123;
 
     @Override
-    public int getActivityLayout() {
-        return R.layout.activity_main;
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        this.setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
     }
 
     @Override
@@ -75,6 +80,9 @@ public class MainActivity extends BaseActivity {
         if (requestCode == CODE_SIGN_IN_ACTIVITY) {
             if (resultCode == RESULT_OK) {
                 this.showSnackBar(this.mainCoordinatorLayout, getString(R.string.connection_succeed));
+                Intent intent = new Intent(this, MapActivity.class);
+                startActivity(intent);
+                finish();
             } else {
                 IdpResponse response = IdpResponse.fromResultIntent(data);
                 if (response == null) {
