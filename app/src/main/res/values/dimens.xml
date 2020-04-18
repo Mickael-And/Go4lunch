@@ -1,4 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="text_margin">16dp</dimen>
+
+    <!-- Navigation header -->
+    <dimen name="navigation_header_size">280dp</dimen>
+    <dimen name="navigation_header_title_margin">50dp</dimen>
+    <dimen name="navigation_header_title_size">45sp</dimen>
+    <dimen name="navigation_header_details_margin">20dp</dimen>
+    <dimen name="navigation_header_profil_img_size">60dp</dimen>
+    <dimen name="navigation_header_details_start_margin">10dp</dimen>
+    <dimen name="navigation_header_name_size">18sp</dimen>
+    <dimen name="navigation_header_mail_size">14sp</dimen>
 </resources>

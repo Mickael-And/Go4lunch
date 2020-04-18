@@ -8,6 +8,10 @@
     <string name="bottom_navigation_list_restaurant_item">List View</string>
     <string name="bottom_navigation_workmates_item">Workmates</string>
 
+    <!-- Used in NavigationDrawer -->
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
     <string name="app_name">Go4Lunch</string>
     <string name="app_title">Go4Lunch</string>
     <string name="app_subtitle">Find a nice restaurant and invite your co-workers for lunch!</string>
@@ -19,4 +23,5 @@
     <string name="error_authentification_canceled">Authentification canceled</string>
     <string name="error_no_internet">No internet</string>
     <string name="error_unknown_error">Unknown error</string>
+    <string name="navigation_header_profil_image_description">User Profil image</string>
 </resources>

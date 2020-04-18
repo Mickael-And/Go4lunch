@@ -7,20 +7,20 @@
         android:enabled="true"
         android:icon="@drawable/ic_map_black_24dp"
         android:title="@string/bottom_navigation_map_restaurant_item"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/list_item"
         android:enabled="true"
         android:icon="@drawable/ic_list_black_24dp"
         android:title="@string/bottom_navigation_list_restaurant_item"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom" />
 
     <item
         android:id="@+id/workmates_item"
         android:enabled="true"
         android:icon="@drawable/ic_group_black_24dp"
         android:title="@string/bottom_navigation_workmates_item"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="ifRoom" />
 
 </menu>

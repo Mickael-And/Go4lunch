@@ -11,9 +11,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
         <activity
-            android:name="com.mickael.go4lunch.activity.main.MainActivity"
+            android:name=".activity.main.MainActivity"
             android:label="Go4Lunch"
             android:noHistory="true"
             android:theme="@style/AppTheme.NoActionBar">
@@ -23,12 +22,11 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".activity.map.MapActivity"
+            android:label="I'm Hungry"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
-
 
 </manifest>

@@ -6,13 +6,17 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.navigation.NavigationView;
 import com.mickael.go4lunch.R;
 import com.mickael.go4lunch.activity.map.dummy.DummyContent;
 
@@ -27,6 +31,12 @@ public class MapActivity extends AppCompatActivity implements WorkmateFragment.O
     @BindView(R.id.bottom_navigation_bar)
     BottomNavigationView bottomNavigationBar;
 
+    @BindView(R.id.map_activity_drawer_layout)
+    DrawerLayout drawerLayout;
+
+    @BindView(R.id.navigation_view)
+    NavigationView navigationView;
+
     final Fragment mapFragment = MapFragment.newInstance();
     final Fragment restaurantListFragment = RestaurantFragment.newInstance(1); // TODO: Changer nombres de colonnes ?
     final Fragment workmateFragment = WorkmateFragment.newInstance(1); // TODO: Changer nombre de colonnes ?
@@ -39,13 +49,10 @@ public class MapActivity extends AppCompatActivity implements WorkmateFragment.O
         this.setContentView(R.layout.map_activity);
         ButterKnife.bind(this);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryVariant));
-        }
-        setSupportActionBar(this.toolbar);
-
+        this.configureStatusBar();
+        this.configureToolbar();
+        this.configureDrawerLayout();
+        this.configureNavigationView();
         this.configureBottomNavigation();
 
         this.fragmentManager.beginTransaction().add(R.id.map_activity_container, workmateFragment, "3").hide(workmateFragment).commit();
@@ -54,7 +61,55 @@ public class MapActivity extends AppCompatActivity implements WorkmateFragment.O
     }
 
     /**
-     * Configuration of the {@link com.google.android.material.bottomnavigation.BottomNavigationView}.
+     * Configuration of the statusBar.
+     */
+    private void configureStatusBar() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryVariant));
+        }
+    }
+
+    /**
+     * Configuration of {@link Toolbar}.
+     */
+    private void configureToolbar() {
+        this.setSupportActionBar(this.toolbar);
+    }
+
+    /**
+     * Configuration of {@link DrawerLayout}.
+     */
+    private void configureDrawerLayout() {
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, this.drawerLayout, this.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        this.drawerLayout.addDrawerListener(toggle);
+        toggle.syncState();
+    }
+
+    /**
+     * Configuration of {@link NavigationView}.
+     */
+    private void configureNavigationView() {
+        this.navigationView.setNavigationItemSelectedListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.navigation_user_lunch_item:
+                    break;
+                case R.id.navigation_user_settings_item:
+                    break;
+                case R.id.navigation_user_logout_item:
+                    break;
+                default:
+                    break;
+            }
+            this.drawerLayout.closeDrawer(GravityCompat.START);
+
+            return true;
+        });
+    }
+
+    /**
+     * Configuration of the {@link BottomNavigationView}.
      */
     private void configureBottomNavigation() {
         this.bottomNavigationBar.setOnNavigationItemSelectedListener(item -> this.updateFragment(item.getItemId()));
@@ -83,6 +138,15 @@ public class MapActivity extends AppCompatActivity implements WorkmateFragment.O
                 return true;
             default:
                 return false;
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (this.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            this.drawerLayout.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
         }
     }
 

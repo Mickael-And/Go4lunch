@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/navigation_header_size"
+    android:background="@android:color/black">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:alpha="0.4"
+        android:background="@drawable/restaurant_background"
+        android:contentDescription="@string/restaurant_image_description" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_navigation_title_app"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/navigation_header_title_margin"
+        android:text="@string/app_title"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/navigation_header_title_size"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/profil_container"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="spread_inside" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/profil_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/navigation_header_details_margin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_navigation_title_app">
+
+        <ImageView
+            android:id="@+id/img_user_profil"
+            android:layout_width="@dimen/navigation_header_profil_img_size"
+            android:layout_height="@dimen/navigation_header_profil_img_size"
+            android:background="@android:color/holo_orange_dark"
+            android:contentDescription="@string/navigation_header_profil_image_description"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/description_container"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <LinearLayout
+            android:id="@+id/description_container"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/img_user_profil"
+            app:layout_constraintTop_toTopOf="parent">
+
+
+            <!-- TODO: Change initial text -->
+            <TextView
+                android:id="@+id/tv_user_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/navigation_header_details_start_margin"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="Mickael Aubert"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/navigation_header_name_size" />
+
+            <!-- TODO: Change initial text -->
+            <TextView
+                android:id="@+id/tv_user_mail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/navigation_header_details_start_margin"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="mickael.mickael@mickael.com"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/navigation_header_mail_size" />
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
