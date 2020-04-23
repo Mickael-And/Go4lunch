@@ -1,4 +1,4 @@
-package com.mickael.go4lunch.activity.map;
+package com.mickael.go4lunch.ui.map;
 
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -8,8 +8,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mickael.go4lunch.R;
-import com.mickael.go4lunch.activity.map.WorkmateFragment.OnListFragmentInteractionListener;
-import com.mickael.go4lunch.activity.map.dummy.DummyContent.DummyItem;
+import com.mickael.go4lunch.ui.map.RestaurantFragment.OnListFragmentInteractionListener;
+import com.mickael.go4lunch.ui.map.dummy.DummyContent.DummyItem;
 
 import java.util.List;
 
@@ -18,12 +18,12 @@ import java.util.List;
  * specified {@link OnListFragmentInteractionListener}.
  * TODO: Replace the implementation with code for your data type.
  */
-public class MyWorkmateRecyclerViewAdapter extends RecyclerView.Adapter<MyWorkmateRecyclerViewAdapter.ViewHolder> {
+public class MyRestaurantRecyclerViewAdapter extends RecyclerView.Adapter<MyRestaurantRecyclerViewAdapter.ViewHolder> {
 
     private final List<DummyItem> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyWorkmateRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
+    public MyRestaurantRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -31,7 +31,7 @@ public class MyWorkmateRecyclerViewAdapter extends RecyclerView.Adapter<MyWorkma
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.fragment_workmate, parent, false);
+                .inflate(R.layout.fragment_restaurant, parent, false);
         return new ViewHolder(view);
     }
 
@@ -39,7 +39,7 @@ public class MyWorkmateRecyclerViewAdapter extends RecyclerView.Adapter<MyWorkma
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
         holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content + " workmates");
+        holder.mContentView.setText(mValues.get(position).content);
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override

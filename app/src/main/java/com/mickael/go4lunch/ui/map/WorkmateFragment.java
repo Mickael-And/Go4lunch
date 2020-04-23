@@ -1,4 +1,4 @@
-package com.mickael.go4lunch.activity.map;
+package com.mickael.go4lunch.ui.map;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -13,10 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mickael.go4lunch.R;
-import com.mickael.go4lunch.activity.map.dummy.DummyContent;
-import com.mickael.go4lunch.activity.map.dummy.DummyContent.DummyItem;
-
-import java.util.List;
+import com.mickael.go4lunch.ui.map.dummy.DummyContent;
+import com.mickael.go4lunch.ui.map.dummy.DummyContent.DummyItem;
 
 /**
  * A fragment representing a list of Items.

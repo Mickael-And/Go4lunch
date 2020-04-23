@@ -1,4 +1,4 @@
-package com.mickael.go4lunch.activity.main;
+package com.mickael.go4lunch.ui.main;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -12,7 +12,7 @@ import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.material.snackbar.Snackbar;
 import com.mickael.go4lunch.R;
-import com.mickael.go4lunch.activity.map.MapActivity;
+import com.mickael.go4lunch.ui.map.MapActivity;
 
 import java.util.Collections;
 
@@ -79,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
     private void handleResponseAfterSignIn(int requestCode, int resultCode, Intent data) {
         if (requestCode == CODE_SIGN_IN_ACTIVITY) {
             if (resultCode == RESULT_OK) {
-                this.showSnackBar(this.mainCoordinatorLayout, getString(R.string.connection_succeed));
                 Intent intent = new Intent(this, MapActivity.class);
                 startActivity(intent);
                 finish();

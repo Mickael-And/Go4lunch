@@ -1,4 +1,4 @@
-package com.mickael.go4lunch.activity.map.dummy;
+package com.mickael.go4lunch.ui.map.dummy;
 
 import java.util.ArrayList;
 import java.util.HashMap;

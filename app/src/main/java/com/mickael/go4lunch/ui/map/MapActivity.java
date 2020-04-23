@@ -1,29 +1,36 @@
-package com.mickael.go4lunch.activity.map;
+package com.mickael.go4lunch.ui.map;
 
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.mickael.go4lunch.R;
-import com.mickael.go4lunch.activity.map.dummy.DummyContent;
+import com.mickael.go4lunch.di.ViewModelFactory;
+import com.mickael.go4lunch.ui.map.dummy.DummyContent;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.android.support.DaggerAppCompatActivity;
 
-public class MapActivity extends AppCompatActivity implements WorkmateFragment.OnListFragmentInteractionListener, RestaurantFragment.OnListFragmentInteractionListener {
+public class MapActivity extends DaggerAppCompatActivity implements WorkmateFragment.OnListFragmentInteractionListener, RestaurantFragment.OnListFragmentInteractionListener {
 
     @BindView(R.id.map_toolbar)
     Toolbar toolbar;
@@ -37,8 +44,15 @@ public class MapActivity extends AppCompatActivity implements WorkmateFragment.O
     @BindView(R.id.navigation_view)
     NavigationView navigationView;
 
+    @Inject
+    ViewModelFactory viewModelFactory;
+
+    private MapActivityViewModel viewModel;
+
+    private HeaderNavigationViewHolder headerNavigationViewHolder;
+
     final Fragment mapFragment = MapFragment.newInstance();
-    final Fragment restaurantListFragment = RestaurantFragment.newInstance(1); // TODO: Changer nombres de colonnes ?
+    final Fragment restaurantListFragment = RestaurantFragment.newInstance(1); // TODO: Changer nombre de colonnes ?
     final Fragment workmateFragment = WorkmateFragment.newInstance(1); // TODO: Changer nombre de colonnes ?
     final FragmentManager fragmentManager = getSupportFragmentManager();
     Fragment active = mapFragment;
@@ -58,6 +72,9 @@ public class MapActivity extends AppCompatActivity implements WorkmateFragment.O
         this.fragmentManager.beginTransaction().add(R.id.map_activity_container, workmateFragment, "3").hide(workmateFragment).commit();
         this.fragmentManager.beginTransaction().add(R.id.map_activity_container, restaurantListFragment, "2").hide(restaurantListFragment).commit();
         this.fragmentManager.beginTransaction().add(R.id.map_activity_container, mapFragment, "1").commit();
+
+        this.viewModel = new ViewModelProvider(this, viewModelFactory).get(MapActivityViewModel.class);
+
     }
 
     /**
@@ -85,6 +102,7 @@ public class MapActivity extends AppCompatActivity implements WorkmateFragment.O
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, this.drawerLayout, this.toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         this.drawerLayout.addDrawerListener(toggle);
         toggle.syncState();
+        this.headerNavigationViewHolder = new HeaderNavigationViewHolder(this.navigationView.getHeaderView(0));
     }
 
     /**
@@ -141,6 +159,7 @@ public class MapActivity extends AppCompatActivity implements WorkmateFragment.O
         }
     }
 
+
     @Override
     public void onBackPressed() {
         if (this.drawerLayout.isDrawerOpen(GravityCompat.START)) {
@@ -154,4 +173,21 @@ public class MapActivity extends AppCompatActivity implements WorkmateFragment.O
     public void onListFragmentInteraction(DummyContent.DummyItem item) {
         Toast.makeText(this, item.content, Toast.LENGTH_SHORT).show();
     }
+
+
+    protected static class HeaderNavigationViewHolder {
+        @BindView(R.id.img_user_profil)
+        ImageView userProfilImage;
+
+        @BindView(R.id.tv_user_name)
+        TextView tvUserName;
+
+        @BindView(R.id.tv_user_mail)
+        TextView tvUserMail;
+
+        HeaderNavigationViewHolder(View view) {
+            ButterKnife.bind(this, view);
+        }
+    }
+
 }
