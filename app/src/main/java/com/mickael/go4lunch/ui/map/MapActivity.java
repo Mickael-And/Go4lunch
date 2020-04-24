@@ -1,7 +1,9 @@
 package com.mickael.go4lunch.ui.map;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
@@ -18,10 +20,14 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
+import com.firebase.ui.auth.AuthUI;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.mickael.go4lunch.R;
 import com.mickael.go4lunch.di.ViewModelFactory;
+import com.mickael.go4lunch.ui.main.MainActivity;
 import com.mickael.go4lunch.ui.map.dummy.DummyContent;
 
 import javax.inject.Inject;
@@ -51,6 +57,7 @@ public class MapActivity extends DaggerAppCompatActivity implements WorkmateFrag
 
     private HeaderNavigationViewHolder headerNavigationViewHolder;
 
+    // TODO: Changer de méthode de gestion des fragments dans le navigation bottom car ne supporte pas le landscape
     final Fragment mapFragment = MapFragment.newInstance();
     final Fragment restaurantListFragment = RestaurantFragment.newInstance(1); // TODO: Changer nombre de colonnes ?
     final Fragment workmateFragment = WorkmateFragment.newInstance(1); // TODO: Changer nombre de colonnes ?
@@ -74,7 +81,22 @@ public class MapActivity extends DaggerAppCompatActivity implements WorkmateFrag
         this.fragmentManager.beginTransaction().add(R.id.map_activity_container, mapFragment, "1").commit();
 
         this.viewModel = new ViewModelProvider(this, viewModelFactory).get(MapActivityViewModel.class);
+        this.updateUserInformation();
+    }
 
+    private void updateUserInformation() {
+        if (this.viewModel.isCurrentUserLOgged()) {
+            if (this.viewModel.getCurrentUser().getPhotoUrl() != null) {
+                Glide.with(this)
+                        .load(this.viewModel.getCurrentUser().getPhotoUrl())
+                        .apply(RequestOptions.circleCropTransform())
+                        .into(this.headerNavigationViewHolder.userProfilImage);
+            }
+            String mail = TextUtils.isEmpty(this.viewModel.getCurrentUser().getEmail()) ? getString(R.string.no_email_found) : this.viewModel.getCurrentUser().getEmail();
+            String username = TextUtils.isEmpty(this.viewModel.getCurrentUser().getDisplayName()) ? getString(R.string.no_username_found) : this.viewModel.getCurrentUser().getDisplayName();
+            this.headerNavigationViewHolder.tvUserMail.setText(mail);
+            this.headerNavigationViewHolder.tvUserName.setText(username);
+        }
     }
 
     /**
@@ -116,6 +138,7 @@ public class MapActivity extends DaggerAppCompatActivity implements WorkmateFrag
                 case R.id.navigation_user_settings_item:
                     break;
                 case R.id.navigation_user_logout_item:
+                    this.signOutUser();
                     break;
                 default:
                     break;
@@ -123,6 +146,14 @@ public class MapActivity extends DaggerAppCompatActivity implements WorkmateFrag
             this.drawerLayout.closeDrawer(GravityCompat.START);
 
             return true;
+        });
+    }
+
+    private void signOutUser() {
+        AuthUI.getInstance().signOut(this).addOnSuccessListener(this, aVoid -> {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
         });
     }
 
@@ -175,7 +206,7 @@ public class MapActivity extends DaggerAppCompatActivity implements WorkmateFrag
     }
 
 
-    protected static class HeaderNavigationViewHolder {
+    static class HeaderNavigationViewHolder {
         @BindView(R.id.img_user_profil)
         ImageView userProfilImage;
 

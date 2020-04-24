@@ -9,10 +9,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.Map;
-
-import javax.inject.Provider;
-import javax.inject.Singleton;
 
 import dagger.MapKey;
 import dagger.Module;
@@ -27,13 +23,6 @@ public class ViewModelModule {
     @MapKey
     @interface ViewModelKey {
         Class<? extends ViewModel> value();
-    }
-
-    @Singleton
-    @Provides
-        //TODO: Virer ce provide car inject dns constructeur de la factory et deja singleton sur la classe
-    ViewModelFactory provideViewModelFactory(Map<Class<? extends ViewModel>, Provider<ViewModel>> providerMap) {
-        return new ViewModelFactory(providerMap);
     }
 
     @Provides

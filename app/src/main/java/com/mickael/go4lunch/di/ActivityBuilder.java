@@ -7,7 +7,6 @@ import dagger.android.ContributesAndroidInjector;
 
 @Module
 public abstract class ActivityBuilder {
-
-    @ContributesAndroidInjector//TODO: Parenthèses à enlever ou modules à fournir ?
+    @ContributesAndroidInjector
     abstract MapActivity bindMapActivity();
 }

@@ -11,6 +11,7 @@ import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.auth.FirebaseAuth;
 import com.mickael.go4lunch.R;
 import com.mickael.go4lunch.ui.map.MapActivity;
 
@@ -35,6 +36,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+            Intent intent = new Intent(this, MapActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
     @Override

@@ -12,6 +12,10 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
+    <!-- Default message user profil -->
+    <string name="no_email_found"> </string>
+    <string name="no_username_found"> </string>
+
     <string name="app_name">Go4Lunch</string>
     <string name="app_title">Go4Lunch</string>
     <string name="app_subtitle">Find a nice restaurant and invite your co-workers for lunch!</string>

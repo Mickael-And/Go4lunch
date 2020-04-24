@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="@dimen/navigation_header_size"
-    android:background="@android:color/black">
+    android:background="@android:color/black"> <!-- TODO: Regarder les Warning -->
 
     <ImageView
         android:layout_width="match_parent"
@@ -41,7 +41,6 @@
             android:id="@+id/img_user_profil"
             android:layout_width="@dimen/navigation_header_profil_img_size"
             android:layout_height="@dimen/navigation_header_profil_img_size"
-            android:background="@android:color/holo_orange_dark"
             android:contentDescription="@string/navigation_header_profil_image_description"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/description_container"
@@ -59,7 +58,6 @@
             app:layout_constraintTop_toTopOf="parent">
 
 
-            <!-- TODO: Change initial text -->
             <TextView
                 android:id="@+id/tv_user_name"
                 android:layout_width="match_parent"
@@ -67,11 +65,9 @@
                 android:layout_marginStart="@dimen/navigation_header_details_start_margin"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="Mickael Aubert"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/navigation_header_name_size" />
 
-            <!-- TODO: Change initial text -->
             <TextView
                 android:id="@+id/tv_user_mail"
                 android:layout_width="match_parent"
@@ -79,7 +75,6 @@
                 android:layout_marginStart="@dimen/navigation_header_details_start_margin"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="mickael.mickael@mickael.com"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/navigation_header_mail_size" />
 
