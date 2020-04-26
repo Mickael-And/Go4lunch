@@ -46,6 +46,8 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-auth:6.2.0'
     // Facebook Login Support
     implementation 'com.facebook.android:facebook-android-sdk:6.4.0'
+    // Google maps
+    implementation 'com.google.android.gms:play-services-maps:17.0.0'
 
     // AppCompat
     implementation 'androidx.appcompat:appcompat:1.1.0'

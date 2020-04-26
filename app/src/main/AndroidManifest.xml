@@ -3,6 +3,7 @@
     package="com.mickael.go4lunch">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <application
         android:name=".base.Go4LunchApplication"
@@ -30,6 +31,10 @@
             android:label="I'm Hungry"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar" />
+
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="AIzaSyAc-Ug3l0KjMCT7ogSkLwI7h-JIzNtKsfE" />
 
     </application>
 
