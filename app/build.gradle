@@ -48,6 +48,9 @@ dependencies {
     implementation 'com.facebook.android:facebook-android-sdk:6.4.0'
     // Google maps
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
+    // Google Places
+    implementation 'com.google.android.libraries.places:places:2.2.0'
+
 
     // AppCompat
     implementation 'androidx.appcompat:appcompat:1.1.0'
