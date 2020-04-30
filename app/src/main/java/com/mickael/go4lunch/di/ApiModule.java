@@ -1,13 +1,8 @@
 package com.mickael.go4lunch.di;
 
-import android.app.Application;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.mickael.go4lunch.data.api.RestaurantApiService;
-
-import java.io.File;
-import java.util.concurrent.TimeUnit;
 
 import javax.inject.Singleton;
 
@@ -26,30 +21,15 @@ public class ApiModule {
     @Provides
     @Singleton
     Gson provideGson() {
-        GsonBuilder gsonBuilder = new GsonBuilder();
-        return gsonBuilder.create();
+        return new GsonBuilder().create();
     }
 
     @Provides
     @Singleton
-    Cache provideCache(Application application) {
-        long cacheSize = 10 * 1024 * 1024; // 10MB
-        File httpCacheDirectory = new File(application.getCacheDir(), "http-cache");
-        return new Cache(httpCacheDirectory, cacheSize);
-    }
-
-    @Provides
-    @Singleton
-    OkHttpClient provideHttpClient(Cache cache) {
+    OkHttpClient provideHttpClient() {
         HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
         logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-
-        OkHttpClient.Builder httpClient = new OkHttpClient.Builder();
-        httpClient.cache(cache);
-        httpClient.addInterceptor(logging);
-        httpClient.connectTimeout(30, TimeUnit.SECONDS);
-        httpClient.readTimeout(30, TimeUnit.SECONDS);
-        return httpClient.build();
+        return new OkHttpClient.Builder().addInterceptor(logging).build();
     }
 
     @Provides
@@ -58,7 +38,7 @@ public class ApiModule {
         return new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .baseUrl("https://api.themoviedb.org/3/") // TODO: renseigner url
+                .baseUrl("https://maps.googleapis.com/maps/")
                 .client(okHttpClient)
                 .build();
     }

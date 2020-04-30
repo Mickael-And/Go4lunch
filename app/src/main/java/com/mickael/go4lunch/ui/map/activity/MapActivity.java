@@ -1,4 +1,4 @@
-package com.mickael.go4lunch.ui.map;
+package com.mickael.go4lunch.ui.map.activity;
 
 import android.content.Intent;
 import android.os.Build;
@@ -29,6 +29,9 @@ import com.mickael.go4lunch.R;
 import com.mickael.go4lunch.di.ViewModelFactory;
 import com.mickael.go4lunch.ui.main.MainActivity;
 import com.mickael.go4lunch.ui.map.dummy.DummyContent;
+import com.mickael.go4lunch.ui.map.fragment.MapFragment;
+import com.mickael.go4lunch.ui.map.fragment.RestaurantFragment;
+import com.mickael.go4lunch.ui.map.fragment.WorkmateFragment;
 
 import javax.inject.Inject;
 
@@ -83,6 +86,11 @@ public class MapActivity extends DaggerAppCompatActivity implements WorkmateFrag
         this.viewModel = new ViewModelProvider(this, viewModelFactory).get(MapActivityViewModel.class);
         this.updateUserInformation();
     }
+
+//    protected OnFailureListener onFailureListener() {
+//        return e -> Toast.makeText(MapActivity.this, getString(R.string.error_unknown_error), Toast.LENGTH_SHORT).show();
+//    }
+
 
     private void updateUserInformation() {
         if (this.viewModel.isCurrentUserLOgged()) {

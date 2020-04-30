@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.mickael.go4lunch.R;
-import com.mickael.go4lunch.ui.map.WorkmateFragment.OnListFragmentInteractionListener;
+import com.mickael.go4lunch.ui.map.fragment.WorkmateFragment.OnListFragmentInteractionListener;
 import com.mickael.go4lunch.ui.map.dummy.DummyContent.DummyItem;
 
 import java.util.List;

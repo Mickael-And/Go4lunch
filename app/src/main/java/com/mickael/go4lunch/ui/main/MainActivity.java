@@ -13,7 +13,7 @@ import com.firebase.ui.auth.IdpResponse;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.mickael.go4lunch.R;
-import com.mickael.go4lunch.ui.map.MapActivity;
+import com.mickael.go4lunch.ui.map.activity.MapActivity;
 
 import java.util.Collections;
 

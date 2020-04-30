@@ -1,7 +1,11 @@
-package com.mickael.go4lunch.ui.map;
+package com.mickael.go4lunch.ui.map.fragment;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,7 +17,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
+import androidx.core.content.ContextCompat;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -21,22 +26,39 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.net.PlacesClient;
 import com.mickael.go4lunch.R;
+import com.mickael.go4lunch.data.model.placesapi.Results;
+import com.mickael.go4lunch.di.ViewModelFactory;
 import com.mickael.go4lunch.utils.PermissionUtils;
+
+import java.util.Locale;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import dagger.android.support.DaggerFragment;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import retrofit2.HttpException;
 
-public class MapFragment extends Fragment implements OnMapReadyCallback {
-
-    public static MapFragment newInstance() {
-        return new MapFragment();
-    }
+public class MapFragment extends DaggerFragment implements OnMapReadyCallback {
 
     @BindView(R.id.map)
     MapView mapView;
+
+    @Inject
+    ViewModelFactory viewModelFactory;
+
+    private MapFragmentViewModel viewModel;
 
     private static final String TAG = MapFragment.class.getSimpleName();
 
@@ -58,11 +80,21 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
 
     private static final String KEY_LOCATION = "location";
 
+    private PlacesClient placesClient;
+
+    Disposable disposable;
+
+    public static MapFragment newInstance() {
+        return new MapFragment();
+    }
+
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.map_fragment, container, false);
         ButterKnife.bind(this, view);
+        this.viewModel = new ViewModelProvider(this, viewModelFactory).get(MapFragmentViewModel.class);
+
         if (savedInstanceState != null) {
             this.lastKnownLocation = savedInstanceState.getParcelable(KEY_LOCATION);
         }
@@ -71,6 +103,13 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
         this.mapView.getMapAsync(this);
 
         return view;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        Places.initialize(getContext(), getString(R.string.google_maps_key));
+        this.placesClient = Places.createClient(getContext());
     }
 
     @Override
@@ -103,6 +142,9 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if (this.disposable != null) {
+            this.disposable.dispose();
+        }
         this.mapView.onDestroy();
     }
 
@@ -119,6 +161,40 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
             outState.putParcelable(KEY_LOCATION, this.lastKnownLocation);
             super.onSaveInstanceState(outState);
         }
+    }
+
+
+    private void displayRestaurants() {
+        // TODO: Change magic number
+        this.disposable = this.viewModel.makeANearbySearchRequest(String.valueOf(this.lastKnownLocation.getLatitude()), String.valueOf(this.lastKnownLocation.getLongitude()), String.valueOf(3000), "restaurant")
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(nearbySearchPlacesApiResponse -> {
+                    for (Results result : nearbySearchPlacesApiResponse.getResults()) {
+                        this.googleMap.addMarker(new MarkerOptions()
+                                .position(new LatLng(result.getGeometry().getLocation().getLat(), result.getGeometry().getLocation().getLng()))
+//                                .icon(this.bitmapDescriptorFromVector(getContext(), R.drawable.ic_restaurant_black_24dp)) // TODO: Essayer de récupérer l'icon de la requete rest
+                                .title(result.getName()));
+                    }
+                }, throwable -> {
+                    // cast to retrofit.HttpException to get the response code
+                    if (throwable instanceof HttpException) {
+                        HttpException response = (HttpException) throwable;
+                        int code = response.code();
+                        Log.i(MapFragmentViewModel.class.getSimpleName(), String.format(Locale.getDefault(), "fetchRestaurants: Api call didn't work %d", code));
+                    } else {
+                        Log.i(MapFragmentViewModel.class.getSimpleName(), "fetchRestaurants: Api call didn't work ");
+                    }
+                });
+    }
+
+    private BitmapDescriptor bitmapDescriptorFromVector(Context context, int vectorResId) {
+        Drawable vectorDrawable = ContextCompat.getDrawable(context, vectorResId);
+        vectorDrawable.setBounds(0, 0, vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight());
+        Bitmap bitmap = Bitmap.createBitmap(vectorDrawable.getIntrinsicWidth(), vectorDrawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        vectorDrawable.draw(canvas);
+        return BitmapDescriptorFactory.fromBitmap(bitmap);
     }
 
     private void enableMyLocation() {
@@ -141,6 +217,7 @@ public class MapFragment extends Fragment implements OnMapReadyCallback {
                     if (this.lastKnownLocation != null) {
                         this.googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(this.lastKnownLocation.getLatitude()
                                 , this.lastKnownLocation.getLongitude()), DEFAULT_ZOOM));
+                        this.displayRestaurants();
                     }
                 } else {
                     Log.d(TAG, "Current location is null. Using defaults.");

@@ -1,14 +1,14 @@
 package com.mickael.go4lunch.data.repository;
 
 import com.mickael.go4lunch.data.api.RestaurantApiService;
-import com.mickael.go4lunch.data.model.Restaurant;
+import com.mickael.go4lunch.data.model.placesapi.NearbySearchPlacesApiResponse;
 
-import java.util.List;
+import java.util.Locale;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import io.reactivex.Observable;
+import io.reactivex.Single;
 
 @Singleton
 public class RestaurantRepository {
@@ -20,23 +20,9 @@ public class RestaurantRepository {
         this.restaurantApiService = restaurantApiService;
     }
 
+    public Single<NearbySearchPlacesApiResponse> makeANearbySearchRequest(String latitude, String longitude, String radius, String type) {
+        String location = String.format(Locale.getDefault(), "%s,%s", latitude, longitude);
+        return this.restaurantApiService.nearbySearchRequest(location, radius, type);
+    }
 
-    /*
-     * We are using this method to fetch the movies list
-     * NetworkBoundResource is part of the Android architecture
-     * components. You will notice that this is a modified version of
-     * that class. That class is based on LiveData but here we are
-     * using Observable from RxJava.
-     *
-     * There are three methods called:
-     * a. fetch data from server
-     * b. fetch data from local
-     * c. save data from api in local
-     *
-     * So basically we fetch data from server, store it locally
-     * and then fetch data from local and update the UI with
-     * this data.
-     *
-     * */
-// e
 }

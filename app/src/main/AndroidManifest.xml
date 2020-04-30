@@ -27,7 +27,7 @@
         </activity>
 
         <activity
-            android:name=".ui.map.MapActivity"
+            android:name=".ui.map.activity.MapActivity"
             android:label="I'm Hungry"
             android:launchMode="singleTop"
             android:theme="@style/AppTheme.NoActionBar" />

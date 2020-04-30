@@ -1,4 +1,4 @@
-package com.mickael.go4lunch.ui.map;
+package com.mickael.go4lunch.ui.map.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.mickael.go4lunch.R;
+import com.mickael.go4lunch.ui.map.MyWorkmateRecyclerViewAdapter;
 import com.mickael.go4lunch.ui.map.dummy.DummyContent;
 import com.mickael.go4lunch.ui.map.dummy.DummyContent.DummyItem;
 

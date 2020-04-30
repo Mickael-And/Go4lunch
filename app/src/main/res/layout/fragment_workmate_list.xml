@@ -9,5 +9,5 @@
     android:layout_marginLeft="16dp"
     android:layout_marginRight="16dp"
     app:layoutManager="LinearLayoutManager"
-    tools:context=".ui.map.WorkmateFragment"
+    tools:context=".ui.map.fragment.WorkmateFragment"
     tools:listitem="@layout/fragment_workmate" />

@@ -2,21 +2,21 @@ package com.mickael.go4lunch.di;
 
 import androidx.lifecycle.ViewModel;
 
-import com.mickael.go4lunch.data.repository.RestaurantRepository;
-import com.mickael.go4lunch.ui.map.MapActivityViewModel;
+import com.mickael.go4lunch.ui.map.activity.MapActivityViewModel;
+import com.mickael.go4lunch.ui.map.fragment.MapFragmentViewModel;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import dagger.Binds;
 import dagger.MapKey;
 import dagger.Module;
-import dagger.Provides;
 import dagger.multibindings.IntoMap;
 
 @Module
-public class ViewModelModule {
+public abstract class ViewModelModule {
 
     @Target(ElementType.METHOD)
     @Retention(RetentionPolicy.RUNTIME)
@@ -25,11 +25,14 @@ public class ViewModelModule {
         Class<? extends ViewModel> value();
     }
 
-    @Provides
+    @Binds
     @IntoMap
     @ViewModelKey(MapActivityViewModel.class)
-    ViewModel provideMapActivityViewModel(RestaurantRepository pRestaurantRepository) {
-        return new MapActivityViewModel(pRestaurantRepository);
-    }
+    abstract ViewModel provideMapActivityViewModel(MapActivityViewModel mapActivityViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MapFragmentViewModel.class)
+    abstract ViewModel provideMapFragmentViewModel(MapFragmentViewModel mapFragmentViewModel);
 
 }
