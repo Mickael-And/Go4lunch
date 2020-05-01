@@ -173,6 +173,7 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback {
                     for (Results result : nearbySearchPlacesApiResponse.getResults()) {
                         this.googleMap.addMarker(new MarkerOptions()
                                 .position(new LatLng(result.getGeometry().getLocation().getLat(), result.getGeometry().getLocation().getLng()))
+                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
 //                                .icon(this.bitmapDescriptorFromVector(getContext(), R.drawable.ic_restaurant_black_24dp)) // TODO: Essayer de récupérer l'icon de la requete rest
                                 .title(result.getName()));
                     }

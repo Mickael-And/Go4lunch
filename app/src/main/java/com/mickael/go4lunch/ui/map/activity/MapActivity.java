@@ -10,14 +10,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
@@ -60,37 +59,25 @@ public class MapActivity extends DaggerAppCompatActivity implements WorkmateFrag
 
     private HeaderNavigationViewHolder headerNavigationViewHolder;
 
-    // TODO: Changer de méthode de gestion des fragments dans le navigation bottom car ne supporte pas le landscape
-    final Fragment mapFragment = MapFragment.newInstance();
-    final Fragment restaurantListFragment = RestaurantFragment.newInstance(1); // TODO: Changer nombre de colonnes ?
-    final Fragment workmateFragment = WorkmateFragment.newInstance(1); // TODO: Changer nombre de colonnes ?
-    final FragmentManager fragmentManager = getSupportFragmentManager();
-    Fragment active = mapFragment;
-
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.map_activity);
         ButterKnife.bind(this);
+        this.viewModel = new ViewModelProvider(this, viewModelFactory).get(MapActivityViewModel.class);
 
         this.configureStatusBar();
         this.configureToolbar();
         this.configureDrawerLayout();
         this.configureNavigationView();
-        this.configureBottomNavigation();
-
-        this.fragmentManager.beginTransaction().add(R.id.map_activity_container, workmateFragment, "3").hide(workmateFragment).commit();
-        this.fragmentManager.beginTransaction().add(R.id.map_activity_container, restaurantListFragment, "2").hide(restaurantListFragment).commit();
-        this.fragmentManager.beginTransaction().add(R.id.map_activity_container, mapFragment, "1").commit();
-
-        this.viewModel = new ViewModelProvider(this, viewModelFactory).get(MapActivityViewModel.class);
+        this.configureBottomNavigation(savedInstanceState);
         this.updateUserInformation();
+
     }
 
 //    protected OnFailureListener onFailureListener() {
 //        return e -> Toast.makeText(MapActivity.this, getString(R.string.error_unknown_error), Toast.LENGTH_SHORT).show();
 //    }
-
 
     private void updateUserInformation() {
         if (this.viewModel.isCurrentUserLOgged()) {
@@ -167,9 +154,21 @@ public class MapActivity extends DaggerAppCompatActivity implements WorkmateFrag
 
     /**
      * Configuration of the {@link BottomNavigationView}.
+     *
+     * @param savedInstanceState
      */
-    private void configureBottomNavigation() {
+    private void configureBottomNavigation(Bundle savedInstanceState) {
         this.bottomNavigationBar.setOnNavigationItemSelectedListener(item -> this.updateFragment(item.getItemId()));
+        final int bottomNavigationViewSelectedItemId = savedInstanceState == null ? this.bottomNavigationBar.getSelectedItemId() :
+                savedInstanceState.getInt("opened_fragment", this.bottomNavigationBar.getSelectedItemId()); // TODO: Constante "opened_fragment" et magic number
+
+        this.bottomNavigationBar.setSelectedItemId(bottomNavigationViewSelectedItemId);
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        outState.putInt("opened_fragment", this.bottomNavigationBar.getSelectedItemId()); // TODO: Constante "opened_fragment"
+        super.onSaveInstanceState(outState);
     }
 
     /**
@@ -181,23 +180,18 @@ public class MapActivity extends DaggerAppCompatActivity implements WorkmateFrag
     private boolean updateFragment(int itemId) {
         switch (itemId) {
             case R.id.map_item:
-                this.fragmentManager.beginTransaction().hide(this.active).show(this.mapFragment).commit();
-                this.active = this.mapFragment;
+                getSupportFragmentManager().beginTransaction().replace(R.id.map_activity_container, MapFragment.newInstance()).commit();
                 return true;
-
             case R.id.list_item:
-                this.fragmentManager.beginTransaction().hide(this.active).show(this.restaurantListFragment).commit();
-                this.active = this.restaurantListFragment;
+                getSupportFragmentManager().beginTransaction().replace(R.id.map_activity_container, RestaurantFragment.newInstance(1)).commit();
                 return true;
             case R.id.workmates_item:
-                this.fragmentManager.beginTransaction().hide(this.active).show(this.workmateFragment).commit();
-                this.active = this.workmateFragment;
+                getSupportFragmentManager().beginTransaction().replace(R.id.map_activity_container, WorkmateFragment.newInstance(1)).commit();
                 return true;
             default:
                 return false;
         }
     }
-
 
     @Override
     public void onBackPressed() {
@@ -212,7 +206,6 @@ public class MapActivity extends DaggerAppCompatActivity implements WorkmateFrag
     public void onListFragmentInteraction(DummyContent.DummyItem item) {
         Toast.makeText(this, item.content, Toast.LENGTH_SHORT).show();
     }
-
 
     static class HeaderNavigationViewHolder {
         @BindView(R.id.img_user_profil)
