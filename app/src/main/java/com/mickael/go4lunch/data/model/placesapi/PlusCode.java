@@ -1,5 +1,8 @@
 package com.mickael.go4lunch.data.model.placesapi;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,12 +15,13 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Photos {
-    private String photo_reference;
+public class PlusCode {
 
-    private String width;
+    @SerializedName("compound_code")
+    @Expose
+    private String compoundCode;
 
-    private String[] html_attributions;
-
-    private String height;
+    @SerializedName("global_code")
+    @Expose
+    private String globalCode;
 }

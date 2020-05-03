@@ -58,7 +58,7 @@
             app:layout_constraintTop_toTopOf="parent">
 
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_user_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -68,7 +68,7 @@
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/navigation_header_name_size" />
 
-            <TextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/tv_user_mail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

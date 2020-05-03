@@ -10,19 +10,22 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class NearbySearchPlacesApiResponse {
+public class Photo {
+
+    @SerializedName("photo_reference")
+    @Expose
+    private String photoReference;
+
+    private String width;
+
     @SerializedName("html_attributions")
     @Expose
-    private String[] htmlAttributions;
+    private String[] html_attributions;
 
-    @SerializedName("results")
-    @Expose
-    private Restaurant[] restaurants;
-
-    private String status;
+    private String height;
 }

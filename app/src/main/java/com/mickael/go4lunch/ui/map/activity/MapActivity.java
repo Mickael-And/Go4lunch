@@ -7,7 +7,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,13 +23,14 @@ import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.textview.MaterialTextView;
 import com.mickael.go4lunch.R;
 import com.mickael.go4lunch.di.ViewModelFactory;
 import com.mickael.go4lunch.ui.main.MainActivity;
 import com.mickael.go4lunch.ui.map.dummy.DummyContent;
-import com.mickael.go4lunch.ui.map.fragment.MapFragment;
-import com.mickael.go4lunch.ui.map.fragment.RestaurantFragment;
 import com.mickael.go4lunch.ui.map.fragment.WorkmateFragment;
+import com.mickael.go4lunch.ui.map.fragment.map.MapFragment;
+import com.mickael.go4lunch.ui.map.fragment.restaurant.RestaurantFragment;
 
 import javax.inject.Inject;
 
@@ -38,7 +38,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.support.DaggerAppCompatActivity;
 
-public class MapActivity extends DaggerAppCompatActivity implements WorkmateFragment.OnListFragmentInteractionListener, RestaurantFragment.OnListFragmentInteractionListener {
+public class MapActivity extends DaggerAppCompatActivity implements WorkmateFragment.OnListFragmentInteractionListener {
 
     @BindView(R.id.map_toolbar)
     Toolbar toolbar;
@@ -183,7 +183,7 @@ public class MapActivity extends DaggerAppCompatActivity implements WorkmateFrag
                 getSupportFragmentManager().beginTransaction().replace(R.id.map_activity_container, MapFragment.newInstance()).commit();
                 return true;
             case R.id.list_item:
-                getSupportFragmentManager().beginTransaction().replace(R.id.map_activity_container, RestaurantFragment.newInstance(1)).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.map_activity_container, RestaurantFragment.newInstance()).commit();
                 return true;
             case R.id.workmates_item:
                 getSupportFragmentManager().beginTransaction().replace(R.id.map_activity_container, WorkmateFragment.newInstance(1)).commit();
@@ -212,10 +212,10 @@ public class MapActivity extends DaggerAppCompatActivity implements WorkmateFrag
         ImageView userProfilImage;
 
         @BindView(R.id.tv_user_name)
-        TextView tvUserName;
+        MaterialTextView tvUserName;
 
         @BindView(R.id.tv_user_mail)
-        TextView tvUserMail;
+        MaterialTextView tvUserMail;
 
         HeaderNavigationViewHolder(View view) {
             ButterKnife.bind(this, view);

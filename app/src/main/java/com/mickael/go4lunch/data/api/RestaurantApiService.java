@@ -10,5 +10,4 @@ public interface RestaurantApiService {
 
     @GET("api/place/nearbysearch/json?key=AIzaSyDuiYTUSAt7OeV6tIoXzTVil6XW5j-NCwc")
     Single<NearbySearchPlacesApiResponse> nearbySearchRequest(@Query("location") String location, @Query("radius") String radius, @Query("type") String type);
-
 }

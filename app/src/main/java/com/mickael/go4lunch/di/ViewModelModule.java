@@ -3,7 +3,8 @@ package com.mickael.go4lunch.di;
 import androidx.lifecycle.ViewModel;
 
 import com.mickael.go4lunch.ui.map.activity.MapActivityViewModel;
-import com.mickael.go4lunch.ui.map.fragment.MapFragmentViewModel;
+import com.mickael.go4lunch.ui.map.fragment.map.MapFragmentViewModel;
+import com.mickael.go4lunch.ui.map.fragment.restaurant.RestaurantFragmentViewModel;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -34,5 +35,10 @@ public abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MapFragmentViewModel.class)
     abstract ViewModel provideMapFragmentViewModel(MapFragmentViewModel mapFragmentViewModel);
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(RestaurantFragmentViewModel.class)
+    abstract ViewModel provideRestaurantFragmentViewModel(RestaurantFragmentViewModel restaurantFragmentViewModel);
 
 }

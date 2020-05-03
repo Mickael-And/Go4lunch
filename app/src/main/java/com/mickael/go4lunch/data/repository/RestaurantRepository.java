@@ -1,5 +1,6 @@
 package com.mickael.go4lunch.data.repository;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.mickael.go4lunch.data.api.RestaurantApiService;
 import com.mickael.go4lunch.data.model.placesapi.NearbySearchPlacesApiResponse;
 
@@ -20,9 +21,8 @@ public class RestaurantRepository {
         this.restaurantApiService = restaurantApiService;
     }
 
-    public Single<NearbySearchPlacesApiResponse> makeANearbySearchRequest(String latitude, String longitude, String radius, String type) {
-        String location = String.format(Locale.getDefault(), "%s,%s", latitude, longitude);
-        return this.restaurantApiService.nearbySearchRequest(location, radius, type);
+    public Single<NearbySearchPlacesApiResponse> getNearbyPlaces(LatLng location, String radius, String type) {
+        return this.restaurantApiService.nearbySearchRequest(String.format(Locale.getDefault(), "%s,%s", location.latitude, location.longitude), radius, type);
     }
 
 }

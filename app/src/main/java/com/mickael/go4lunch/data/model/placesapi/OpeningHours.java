@@ -1,5 +1,8 @@
 package com.mickael.go4lunch.data.model.placesapi;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -12,8 +15,9 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Plus_code {
-    private String compound_code;
+public class OpeningHours {
 
-    private String global_code;
+    @SerializedName("open_now")
+    @Expose
+    private String openNow;
 }
