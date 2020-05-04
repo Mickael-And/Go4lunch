@@ -14,6 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -67,6 +69,9 @@ public class RestaurantFragment extends DaggerFragment {
 
     private static final String RESTAURANT_TYPE_PLACES = "restaurant";
 
+    @Nullable
+    private LatLng deviceLocation;
+
     private PlacesClient placesClient;
 
     // TODO: Constructeur vide ?
@@ -85,7 +90,7 @@ public class RestaurantFragment extends DaggerFragment {
             if (restaurants != null && !restaurants.isEmpty()) {
                 this.recyclerView.setVisibility(View.VISIBLE);
                 this.tvErrorMessage.setVisibility(View.INVISIBLE);
-                this.restaurantsListAdapter.updateList(restaurants);
+                this.restaurantsListAdapter.updateList(restaurants, this.deviceLocation);
             } else {
                 this.recyclerView.setVisibility(View.INVISIBLE);
                 this.tvErrorMessage.setVisibility(View.VISIBLE);
@@ -106,6 +111,8 @@ public class RestaurantFragment extends DaggerFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         this.restaurantsListAdapter = new RestaurantListAdapter(new ArrayList<>(), restaurant -> System.out.println(restaurant.getName()));
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this.recyclerView.getContext(), LinearLayoutManager.VERTICAL);
+        this.recyclerView.addItemDecoration(dividerItemDecoration);
         this.recyclerView.setAdapter(this.restaurantsListAdapter);
     }
 
@@ -137,8 +144,8 @@ public class RestaurantFragment extends DaggerFragment {
         locationResult.addOnCompleteListener(getActivity(), task -> {
             if (task.isSuccessful()) {
                 if (task.getResult() != null) {
-                    LatLng deviceLocation = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
-                    this.viewModel.makeANearbySearchRequest(deviceLocation, String.valueOf(DEFAULT_RADIUS_FOR_RESTAURANT_REQUEST), RESTAURANT_TYPE_PLACES);
+                    this.deviceLocation = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
+                    this.viewModel.makeANearbySearchRequest(this.deviceLocation, String.valueOf(DEFAULT_RADIUS_FOR_RESTAURANT_REQUEST), RESTAURANT_TYPE_PLACES);
                 } else {
                     Log.d(TAG, "Current location is null");
                 }

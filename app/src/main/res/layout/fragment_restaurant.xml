@@ -1,13 +1,112 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:padding="5dp">
 
-    <TextView
-        android:id="@+id/content"
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_restaurant_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="Nom du resto"
+        android:textColor="@android:color/black"
+        android:textSize="17sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@id/tv_restaurant_adress"
+        app:layout_constraintEnd_toStartOf="@id/tv_distance_to_device"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_distance_to_device"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem" />
-</LinearLayout>
+        android:layout_marginEnd="10dp"
+        android:ellipsize="end"
+        android:text="2000m"
+        android:textColor="@android:color/darker_gray"
+        android:textSize="17sp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_restaurant_name"
+        app:layout_constraintEnd_toStartOf="@id/img_restaurant"
+        app:layout_constraintStart_toEndOf="@id/tv_restaurant_name"
+        app:layout_constraintTop_toTopOf="@id/tv_restaurant_name" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_restaurant_adress"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="Adresse du restaurant"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toTopOf="@id/tv_opening_hours"
+        app:layout_constraintEnd_toStartOf="@id/img_workmates_number"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_restaurant_name" />
+
+    <ImageView
+        android:id="@+id/img_workmates_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dp"
+
+        android:src="@drawable/ic_person_outline_black_24dp"
+        app:layout_constraintBottom_toBottomOf="@id/tv_restaurant_adress"
+        app:layout_constraintEnd_toStartOf="@id/tv_workmates_number"
+        app:layout_constraintStart_toEndOf="@id/tv_restaurant_adress"
+        app:layout_constraintTop_toTopOf="@id/tv_restaurant_adress" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_workmates_number"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="(2)"
+        app:layout_constraintBottom_toBottomOf="@id/img_workmates_number"
+        app:layout_constraintEnd_toStartOf="@id/img_restaurant"
+        app:layout_constraintStart_toEndOf="@id/img_workmates_number"
+        app:layout_constraintTop_toTopOf="@id/img_workmates_number" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_opening_hours"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:text="Horaires d'ouvertures"
+        android:textSize="13sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/restaurant_rating"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_restaurant_adress" />
+
+    <RatingBar
+        android:id="@+id/restaurant_rating"
+        style="?android:ratingBarStyleSmall"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="10dp"
+        android:numStars="5"
+        app:layout_constraintBottom_toBottomOf="@id/tv_opening_hours"
+        app:layout_constraintEnd_toStartOf="@id/img_restaurant"
+        app:layout_constraintStart_toEndOf="@id/tv_opening_hours"
+        app:layout_constraintTop_toTopOf="@id/tv_opening_hours" />
+
+    <ImageView
+        android:id="@+id/img_restaurant"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/ic_image_black_24dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/tv_workmates_number"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
