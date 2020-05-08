@@ -21,16 +21,16 @@ import androidx.lifecycle.ViewModelProvider;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textview.MaterialTextView;
 import com.mickael.go4lunch.R;
 import com.mickael.go4lunch.di.ViewModelFactory;
 import com.mickael.go4lunch.ui.main.MainActivity;
-import com.mickael.go4lunch.ui.map.dummy.DummyContent;
-import com.mickael.go4lunch.ui.map.fragment.WorkmateFragment;
 import com.mickael.go4lunch.ui.map.fragment.map.MapFragment;
 import com.mickael.go4lunch.ui.map.fragment.restaurant.RestaurantFragment;
+import com.mickael.go4lunch.ui.map.fragment.workmate.WorkmateFragment;
 
 import javax.inject.Inject;
 
@@ -38,7 +38,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.support.DaggerAppCompatActivity;
 
-public class MapActivity extends DaggerAppCompatActivity implements WorkmateFragment.OnListFragmentInteractionListener {
+public class MapActivity extends DaggerAppCompatActivity {
 
     @BindView(R.id.map_toolbar)
     Toolbar toolbar;
@@ -74,10 +74,6 @@ public class MapActivity extends DaggerAppCompatActivity implements WorkmateFrag
         this.updateUserInformation();
 
     }
-
-//    protected OnFailureListener onFailureListener() {
-//        return e -> Toast.makeText(MapActivity.this, getString(R.string.error_unknown_error), Toast.LENGTH_SHORT).show();
-//    }
 
     private void updateUserInformation() {
         if (this.viewModel.isCurrentUserLOgged()) {
@@ -186,7 +182,7 @@ public class MapActivity extends DaggerAppCompatActivity implements WorkmateFrag
                 getSupportFragmentManager().beginTransaction().replace(R.id.map_activity_container, RestaurantFragment.newInstance()).commit();
                 return true;
             case R.id.workmates_item:
-                getSupportFragmentManager().beginTransaction().replace(R.id.map_activity_container, WorkmateFragment.newInstance(1)).commit();
+                getSupportFragmentManager().beginTransaction().replace(R.id.map_activity_container, WorkmateFragment.newInstance()).commit();
                 return true;
             default:
                 return false;
@@ -200,11 +196,6 @@ public class MapActivity extends DaggerAppCompatActivity implements WorkmateFrag
         } else {
             super.onBackPressed();
         }
-    }
-
-    @Override
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
-        Toast.makeText(this, item.content, Toast.LENGTH_SHORT).show();
     }
 
     static class HeaderNavigationViewHolder {

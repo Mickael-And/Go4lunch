@@ -18,10 +18,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.textview.MaterialTextView;
 import com.mickael.go4lunch.R;
 import com.mickael.go4lunch.data.model.placesapi.Restaurant;
-import com.mickael.go4lunch.ui.map.dummy.DummyContent.DummyItem;
 import com.mickael.go4lunch.ui.map.fragment.restaurant.RestaurantFragment.OnItemClickListener;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -29,7 +27,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
+ * {@link RecyclerView.Adapter} that can display a {@link Restaurant} and makes a call to the
  * specified {@link OnItemClickListener}.
  */
 public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAdapter.RestaurantViewHolder> {
@@ -40,7 +38,7 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
 
     public RestaurantListAdapter(List<Restaurant> restaurants, OnItemClickListener listener) {
         this.restaurants = restaurants;
-        clickListener = listener;
+        this.clickListener = listener;
     }
 
     @NonNull
@@ -109,7 +107,6 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
         this.deviceLocation = deviceLocation;
         this.restaurants = pRestaurants;
         notifyDataSetChanged();
-
     }
 
     public static class RestaurantViewHolder extends RecyclerView.ViewHolder {
@@ -128,7 +125,7 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
         @BindView(R.id.img_restaurant)
         ImageView restaurantImg;
 
-        public RestaurantViewHolder(View view) {
+        public RestaurantViewHolder(@NonNull View view) {
             super(view);
             ButterKnife.bind(this, view);
         }

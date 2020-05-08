@@ -1,13 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.recyclerview.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/list"
-    android:name="com.mickael.go4lunch.activity.map.WorkmateFragment"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
-    app:layoutManager="LinearLayoutManager"
-    tools:context=".ui.map.fragment.WorkmateFragment"
-    tools:listitem="@layout/fragment_workmate" />
+    android:layout_height="match_parent">
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list_workmates"
+        android:name="com.mickael.go4lunch.activity.map.WorkmateFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:visibility="visible"
+        app:layoutManager="LinearLayoutManager"
+        tools:context=".ui.map.fragment.workmate.WorkmateFragment"
+        tools:listitem="@layout/fragment_workmate" />
+
+    <com.google.android.material.textview.MaterialTextView
+        android:id="@+id/tv_workmates_error_message"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="No workmates found"
+        android:textSize="20sp"
+        android:visibility="invisible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,6 +2,7 @@ package com.mickael.go4lunch.ui.main;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -10,9 +11,11 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.mickael.go4lunch.R;
+import com.mickael.go4lunch.data.api.firebase.UserDAO;
 import com.mickael.go4lunch.ui.map.activity.MapActivity;
 
 import java.util.Collections;
@@ -85,6 +88,13 @@ public class MainActivity extends AppCompatActivity {
     private void handleResponseAfterSignIn(int requestCode, int resultCode, Intent data) {
         if (requestCode == CODE_SIGN_IN_ACTIVITY) {
             if (resultCode == RESULT_OK) {
+                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                    String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+                    String username = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+                    String urlPicture = FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl() != null ? FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString() : null;
+                    UserDAO.createUser(userId, username, urlPicture, null).addOnFailureListener(e -> Toast.makeText(this, , getString(R.string.error_unknown_error), Toast.LENGTH_SHORT).show());
+                }
+
                 Intent intent = new Intent(this, MapActivity.class);
                 startActivity(intent);
                 finish();

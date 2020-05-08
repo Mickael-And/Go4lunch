@@ -1,6 +1,7 @@
 package com.mickael.go4lunch.di;
 
 import com.mickael.go4lunch.ui.map.activity.MapActivity;
+import com.mickael.go4lunch.ui.map.fragment.workmate.WorkmateFragment;
 import com.mickael.go4lunch.ui.map.fragment.map.MapFragment;
 import com.mickael.go4lunch.ui.map.fragment.restaurant.RestaurantFragment;
 
@@ -17,4 +18,7 @@ public abstract class ActivityBuilder {
 
     @ContributesAndroidInjector
     abstract RestaurantFragment bindRestaurantFragment();
+
+    @ContributesAndroidInjector
+    abstract WorkmateFragment bindWorkmateFragment();
 }

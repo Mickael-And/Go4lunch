@@ -19,5 +19,5 @@ public class OpeningHours {
 
     @SerializedName("open_now")
     @Expose
-    private String openNow;
+    private boolean openNow;
 }

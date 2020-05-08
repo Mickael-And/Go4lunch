@@ -82,11 +82,11 @@ public class RestaurantFragment extends DaggerFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.viewModel = new ViewModelProvider(this, viewModelFactory).get(RestaurantFragmentViewModel.class);
+        this.viewModel = new ViewModelProvider(this, this.viewModelFactory).get(RestaurantFragmentViewModel.class);
         this.fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
         Places.initialize(getContext(), getString(R.string.google_maps_key));
         this.placesClient = Places.createClient(getContext());
-        this.viewModel.getRestaurants().observe(this, restaurants -> {
+        this.viewModel.getRestaurants().observe(this, restaurants -> { //TODO: Create method
             if (restaurants != null && !restaurants.isEmpty()) {
                 this.recyclerView.setVisibility(View.VISIBLE);
                 this.tvErrorMessage.setVisibility(View.INVISIBLE);
@@ -95,7 +95,6 @@ public class RestaurantFragment extends DaggerFragment {
                 this.recyclerView.setVisibility(View.INVISIBLE);
                 this.tvErrorMessage.setVisibility(View.VISIBLE);
             }
-
         });
     }
 
@@ -117,8 +116,8 @@ public class RestaurantFragment extends DaggerFragment {
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
+    public void onResume() {
+        super.onResume();
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
         } else {
