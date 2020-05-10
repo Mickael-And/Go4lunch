@@ -77,7 +77,7 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
                              @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.map_fragment, container, false);
+        View view = inflater.inflate(R.layout.fragment_map, container, false);
         ButterKnife.bind(this, view);
         this.mapView.onCreate(savedInstanceState); // Null if in onCreate method because ButterKnife isn't initialized
         return view;

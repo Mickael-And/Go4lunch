@@ -1,6 +1,7 @@
 package com.mickael.go4lunch.ui.map.fragment.restaurant;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ import com.google.android.material.textview.MaterialTextView;
 import com.mickael.go4lunch.R;
 import com.mickael.go4lunch.data.model.Restaurant;
 import com.mickael.go4lunch.di.ViewModelFactory;
+import com.mickael.go4lunch.ui.restaurantdetails.RestaurantDetailsActivity;
 import com.mickael.go4lunch.utils.PermissionUtils;
 
 import java.util.ArrayList;
@@ -44,6 +46,8 @@ import dagger.android.support.DaggerFragment;
  * interface.
  */
 public class RestaurantFragment extends DaggerFragment {
+
+    public static final String EXTRAS_RESTAURANT_ID = "restaurant.id";
 
     @BindView(R.id.list_restaurants)
     RecyclerView recyclerView;
@@ -100,7 +104,11 @@ public class RestaurantFragment extends DaggerFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        this.restaurantsListAdapter = new RestaurantListAdapter(new ArrayList<>(), restaurant -> System.out.println(restaurant.getName())); // TODO: implement restaurant details activity
+        this.restaurantsListAdapter = new RestaurantListAdapter(new ArrayList<>(), restaurant -> {
+            Intent intent = new Intent(getActivity(), RestaurantDetailsActivity.class);
+            intent.putExtra(EXTRAS_RESTAURANT_ID, restaurant.getId());
+            startActivity(intent);
+        });
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this.recyclerView.getContext(), LinearLayoutManager.VERTICAL);
         this.recyclerView.addItemDecoration(dividerItemDecoration);
         this.recyclerView.setAdapter(this.restaurantsListAdapter);

@@ -8,7 +8,7 @@
         android:id="@+id/navigation_map"
         android:name="com.mickael.go4lunch.ui.map.fragment.map.MapFragment"
         android:label="@string/map_fragment_title"
-        tools:layout="@layout/map_fragment" />
+        tools:layout="@layout/fragment_map" />
 
     <fragment
         android:id="@+id/navigation_restaurants"

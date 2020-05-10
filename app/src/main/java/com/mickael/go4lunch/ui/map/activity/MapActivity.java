@@ -60,7 +60,7 @@ public class MapActivity extends DaggerAppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.setContentView(R.layout.map_activity);
+        this.setContentView(R.layout.activity_map);
         ButterKnife.bind(this);
         this.viewModel = new ViewModelProvider(this, viewModelFactory).get(MapActivityViewModel.class);
 

@@ -17,7 +17,7 @@
         android:visibility="visible"
         app:layoutManager="LinearLayoutManager"
         tools:context=".ui.map.fragment.workmate.WorkmateFragment"
-        tools:listitem="@layout/fragment_workmate" />
+        tools:listitem="@layout/item_workmate" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_workmates_error_message"

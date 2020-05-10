@@ -41,7 +41,7 @@ public class WorkmatesListAdapter extends RecyclerView.Adapter<WorkmatesListAdap
     @NonNull
     @Override
     public WorkmateViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new WorkmateViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.fragment_workmate, parent, false));
+        return new WorkmateViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_workmate, parent, false));
     }
 
     @Override

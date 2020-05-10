@@ -17,7 +17,7 @@
         android:visibility="visible"
         app:layoutManager="LinearLayoutManager"
         tools:context=".ui.map.fragment.restaurant.RestaurantFragment"
-        tools:listitem="@layout/fragment_restaurant" />
+        tools:listitem="@layout/item_restaurant" />
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/tv_restaurants_error_message"

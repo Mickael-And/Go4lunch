@@ -6,6 +6,7 @@ import com.mickael.go4lunch.ui.map.activity.MapActivityViewModel;
 import com.mickael.go4lunch.ui.map.fragment.map.MapFragmentViewModel;
 import com.mickael.go4lunch.ui.map.fragment.restaurant.RestaurantFragmentViewModel;
 import com.mickael.go4lunch.ui.map.fragment.workmate.WorkmateFragmentViewModel;
+import com.mickael.go4lunch.ui.restaurantdetails.RestaurantDetailsViewModel;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -47,5 +48,8 @@ public abstract class ViewModelModule {
     @ViewModelKey(WorkmateFragmentViewModel.class)
     abstract ViewModel provideWorkmateFragmentViewModel(WorkmateFragmentViewModel workmateFragmentViewModel);
 
-
+    @Binds
+    @IntoMap
+    @ViewModelKey(RestaurantDetailsViewModel.class)
+    abstract ViewModel provideRestaurantDetailsViewModel(RestaurantDetailsViewModel restaurantDetailsViewModel);
 }
