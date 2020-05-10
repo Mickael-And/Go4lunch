@@ -1,7 +1,10 @@
-package com.mickael.go4lunch.data.model.placesapi.common;
+package com.mickael.go4lunch.data.model.placesapi.response;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.mickael.go4lunch.data.model.Restaurant;
+
+import java.util.List;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -10,18 +13,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class PlusCode {
-
-    @SerializedName("compound_code")
+public class NearbySearchRestaurantsApiResponse {
+    @SerializedName("results")
     @Expose
-    private String compoundCode;
-
-    @SerializedName("global_code")
-    @Expose
-    private String globalCode;
+    private List<Restaurant> restaurants;
 }

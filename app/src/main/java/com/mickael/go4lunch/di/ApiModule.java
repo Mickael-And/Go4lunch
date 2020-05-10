@@ -38,14 +38,14 @@ public class ApiModule {
         return new Retrofit.Builder()
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .baseUrl("https://maps.googleapis.com/maps/")
+                .baseUrl("https://maps.googleapis.com/maps/api/place/")
                 .client(okHttpClient)
                 .build();
     }
 
     @Provides
     @Singleton
-    RestaurantApiService provideMovieApiService(Retrofit retrofit) {
+    RestaurantApiService providePlacesApiService(Retrofit retrofit) {
         return retrofit.create(RestaurantApiService.class);
     }
 

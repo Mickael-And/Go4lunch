@@ -16,14 +16,8 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class NearbySearchPlacesApiResponse {
-    @SerializedName("html_attributions")
+public class RestaurantDetailsApiResponse {
+    @SerializedName("result")
     @Expose
-    private String[] htmlAttributions;
-
-    @SerializedName("results")
-    @Expose
-    private Restaurant[] restaurants;
-
-    private String status;
+    private Restaurant restaurant;
 }

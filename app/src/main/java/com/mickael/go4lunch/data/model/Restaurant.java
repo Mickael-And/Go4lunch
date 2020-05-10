@@ -5,7 +5,8 @@ import com.google.gson.annotations.SerializedName;
 import com.mickael.go4lunch.data.model.placesapi.common.Geometry;
 import com.mickael.go4lunch.data.model.placesapi.common.OpeningHours;
 import com.mickael.go4lunch.data.model.placesapi.common.Photo;
-import com.mickael.go4lunch.data.model.placesapi.common.PlusCode;
+
+import java.util.List;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -20,49 +21,30 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Restaurant {
-    private String[] types;
 
-    @SerializedName("business_status")
+    String vicinity;
+
+    @SerializedName("international_phone_number")
     @Expose
-    private String businessStatus;
+    String internationalPhoneNumber;
 
-    private String icon;
+    Geometry geometry;
 
-    private String rating;
+    List<Photo> photos;
 
-    @SerializedName("photos")
-    @Expose
-    private Photo[] photos;
-
-    private String reference;
-
-    @SerializedName("user_ratings_total")
-    @Expose
-    private String userRatingsTotal;
-
-    @SerializedName("price_level")
-    @Expose
-    private String priceLevel;
-
-    private String scope;
-
-    private String name;
-
-    @SerializedName("opening_hours")
-    @Expose
-    private OpeningHours openingHours;
-
-    private Geometry geometry;
-
-    private String vicinity;
-
-    private String id;
-
-    @SerializedName("plus_code")
-    @Expose
-    private PlusCode plusCode;
+    String name;
 
     @SerializedName("place_id")
     @Expose
-    private String placeId;
+    String placeId;
+
+    String rating;
+
+    String website;
+
+    @SerializedName("opening_hours")
+    @Expose
+    OpeningHours openingHours;
+
+
 }

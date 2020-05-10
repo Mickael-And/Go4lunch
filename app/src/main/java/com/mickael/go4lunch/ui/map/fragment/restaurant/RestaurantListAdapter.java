@@ -54,7 +54,7 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
         holder.restaurantName.setText(restaurant.getName());
         holder.distanceRestaurantToDevice.setText(this.getDistance(restaurant));
         holder.restaurantAdress.setText(restaurant.getVicinity());
-        holder.restaurantRating.setRating((int) Double.parseDouble(restaurant.getRating()));
+        holder.restaurantRating.setRating(this.updateRestaurantRating(restaurant.getRating()));
         if (restaurant.getPhotos() != null) {
             this.updateItemPhoto(holder, restaurant);
         }
@@ -79,13 +79,21 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
 
     private void updateItemPhoto(RestaurantViewHolder holder, Restaurant restaurant) {
         String url = String.format(Locale.getDefault(), "https://maps.googleapis.com/maps/api/place/photo?" +
-                "maxheight=400" +
+                "maxheight=1600" +
                 "&photoreference=%s" +
-                "&key=AIzaSyDuiYTUSAt7OeV6tIoXzTVil6XW5j-NCwc", restaurant.getPhotos()[0].getPhotoReference());
+                "&key=AIzaSyDuiYTUSAt7OeV6tIoXzTVil6XW5j-NCwc", restaurant.getPhotos().get(0).getPhotoReference());
+        System.out.println("Restaurant adapter photos = " + restaurant.getPhotos());
+        System.out.println("Restaurant adapter photos = " + restaurant.getPhotos().get(0));
+        System.out.println("Restaurant adapter photos = " + restaurant.getPhotos().get(0).getPhotoReference());
         Glide.with(holder.itemView)
                 .load(url)
                 .transform(new CenterCrop(), new RoundedCorners(25))
                 .into(holder.restaurantImg);
+    }
+
+    private float updateRestaurantRating(String rating) {
+        float restaurantRating = Float.parseFloat(rating);
+        return (3 * restaurantRating) / 5;
     }
 
     private String getDistance(Restaurant restaurant) {

@@ -9,7 +9,6 @@ import com.google.android.gms.maps.model.LatLng;
 import com.mickael.go4lunch.data.model.Restaurant;
 import com.mickael.go4lunch.data.repository.RestaurantRepository;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -37,11 +36,11 @@ public class RestaurantFragmentViewModel extends ViewModel {
         this.restaurants = new MutableLiveData<>();
     }
 
-    public void makeANearbySearchRequest(LatLng location, String radius, String type) {
-        this.disposable = this.restaurantRepository.getNearbyPlaces(location, radius, type)
+    public void makeANearbySearchRequest(LatLng location, String radius) {
+        this.disposable = this.restaurantRepository.getNearbyPlaces(location, radius)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(nearbySearchPlacesApiResponse -> restaurants.setValue(Arrays.asList(nearbySearchPlacesApiResponse.getRestaurants())),
+                .subscribe(nearbySearchPlacesApiResponse -> restaurants.setValue(nearbySearchPlacesApiResponse.getRestaurants()),
                         throwable -> {
                             // cast to retrofit.HttpException to get the response code
                             if (throwable instanceof HttpException) {

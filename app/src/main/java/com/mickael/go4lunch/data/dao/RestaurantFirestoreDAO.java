@@ -8,8 +8,8 @@ import com.mickael.go4lunch.data.model.Restaurant;
 import com.mickael.go4lunch.data.model.placesapi.common.Geometry;
 import com.mickael.go4lunch.data.model.placesapi.common.OpeningHours;
 import com.mickael.go4lunch.data.model.placesapi.common.Photo;
-import com.mickael.go4lunch.data.model.placesapi.common.PlusCode;
 
+import java.util.List;
 import java.util.Map;
 
 public class RestaurantFirestoreDAO {
@@ -21,9 +21,9 @@ public class RestaurantFirestoreDAO {
     }
 
     // CREATE
-    public static Task<Void> createRestaurant(String[] types, String businessStatus, String icon, String rating, Photo[] photos, String reference, String userRatingsTotal, String priceLevel,
-                                              String scope, String name, OpeningHours openingHours, Geometry geometry, String vicinity, String id, PlusCode plusCode, String placeId) {
-        Restaurant restaurantToCreate = new Restaurant(types, businessStatus, icon, rating, photos, reference, userRatingsTotal, priceLevel, scope, name, openingHours, geometry, vicinity, id, plusCode, placeId);
+    public static Task<Void> createRestaurant(String vicinity, String internationalPhoneNumber, Geometry geometry, List<Photo> photos,
+                                              String name, String placeId, String rating, String website, OpeningHours openingHours) {
+        Restaurant restaurantToCreate = new Restaurant(vicinity, internationalPhoneNumber, geometry, photos, name, placeId, rating, website, openingHours);
         return RestaurantFirestoreDAO.getRestaurantsCollection().document().set(restaurantToCreate);
     }
 

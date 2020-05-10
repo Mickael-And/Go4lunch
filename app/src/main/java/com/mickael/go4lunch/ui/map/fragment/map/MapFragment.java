@@ -62,8 +62,6 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback {
 
     private static final int DEFAULT_RADIUS_FOR_RESTAURANT_REQUEST = 2000;
 
-    private static final String RESTAURANT_TYPE_PLACES = "restaurant";
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -153,7 +151,7 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback {
                 if (task.getResult() != null) {
                     LatLng deviceLocation = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
                     this.moveMap(deviceLocation, DEFAULT_ZOOM);
-                    this.viewModel.makeANearbySearchRequest(deviceLocation, String.valueOf(DEFAULT_RADIUS_FOR_RESTAURANT_REQUEST), RESTAURANT_TYPE_PLACES);
+                    this.viewModel.makeANearbySearchRequest(deviceLocation, String.valueOf(DEFAULT_RADIUS_FOR_RESTAURANT_REQUEST));
                 } else {
                     Log.d(TAG, "Current location is null. Using defaults.");
                     this.moveMap(this.defaultLocation, DEFAULT_ZOOM);

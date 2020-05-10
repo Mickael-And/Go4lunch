@@ -16,16 +16,7 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Photo {
-
     @SerializedName("photo_reference")
     @Expose
     private String photoReference;
-
-    private String width;
-
-    @SerializedName("html_attributions")
-    @Expose
-    private String[] html_attributions;
-
-    private String height;
 }

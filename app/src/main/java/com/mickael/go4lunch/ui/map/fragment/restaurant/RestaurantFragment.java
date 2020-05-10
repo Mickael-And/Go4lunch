@@ -70,8 +70,6 @@ public class RestaurantFragment extends DaggerFragment {
 
     private static final int DEFAULT_RADIUS_FOR_RESTAURANT_REQUEST = 2000;
 
-    private static final String RESTAURANT_TYPE_PLACES = "restaurant";
-
     @Nullable
     private LatLng deviceLocation; // TODO: Mettre dans ViewModel ? Null au passage en paysage et inversement
 
@@ -105,8 +103,9 @@ public class RestaurantFragment extends DaggerFragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         this.restaurantsListAdapter = new RestaurantListAdapter(new ArrayList<>(), restaurant -> {
+            System.out.println(restaurant.getPlaceId());
             Intent intent = new Intent(getActivity(), RestaurantDetailsActivity.class);
-            intent.putExtra(EXTRAS_RESTAURANT_ID, restaurant.getId());
+            intent.putExtra(EXTRAS_RESTAURANT_ID, restaurant.getPlaceId());
             startActivity(intent);
         });
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this.recyclerView.getContext(), LinearLayoutManager.VERTICAL);
@@ -143,7 +142,7 @@ public class RestaurantFragment extends DaggerFragment {
             if (task.isSuccessful()) {
                 if (task.getResult() != null) {
                     this.deviceLocation = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
-                    this.viewModel.makeANearbySearchRequest(this.deviceLocation, String.valueOf(DEFAULT_RADIUS_FOR_RESTAURANT_REQUEST), RESTAURANT_TYPE_PLACES);
+                    this.viewModel.makeANearbySearchRequest(this.deviceLocation, String.valueOf(DEFAULT_RADIUS_FOR_RESTAURANT_REQUEST));
                 } else {
                     Log.d(TAG, "Current location is null");
                 }
