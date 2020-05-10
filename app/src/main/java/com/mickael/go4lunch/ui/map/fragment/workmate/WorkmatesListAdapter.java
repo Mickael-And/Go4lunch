@@ -1,6 +1,7 @@
 package com.mickael.go4lunch.ui.map.fragment.workmate;
 
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +13,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.android.material.textview.MaterialTextView;
 import com.mickael.go4lunch.R;
+import com.mickael.go4lunch.data.dao.LunchFirestoreDAO;
+import com.mickael.go4lunch.data.model.Lunch;
 import com.mickael.go4lunch.data.model.User;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -29,8 +33,8 @@ public class WorkmatesListAdapter extends RecyclerView.Adapter<WorkmatesListAdap
     private List<User> users;
     private final WorkmateFragment.OnItemClickListener clickListener;
 
-    public WorkmatesListAdapter(List<User> items, WorkmateFragment.OnItemClickListener listener) {
-        this.users = items;
+    public WorkmatesListAdapter(List<User> users, WorkmateFragment.OnItemClickListener listener) {
+        this.users = users;
         this.clickListener = listener;
     }
 
@@ -47,16 +51,49 @@ public class WorkmatesListAdapter extends RecyclerView.Adapter<WorkmatesListAdap
                 .load(user.getUrlPicture())
                 .circleCrop()
                 .into(holder.imgUser);
-        String string;
-        if (user.getLaucnhPlaces() != null && !user.getLaucnhPlaces().isEmpty()) {
-            string = String.format(Locale.getDefault(), "%s is eating %s (%s)", user.getUsername(), "Saucisse", "La bonne saucisse");
-            holder.tvLaunchPlaces.setTextColor(Color.BLACK);
-        } else {
-            string = String.format(Locale.getDefault(), "%s hasn't decided yet", user.getUsername());
-            holder.tvLaunchPlaces.setTextColor(Color.GRAY);
-        }
-        holder.tvLaunchPlaces.setText(string);
+
+        this.isEatingLunchAtNoon(user, holder);
+
         holder.itemView.setOnClickListener(v -> this.clickListener.onClick(user));
+    }
+
+    private void isEatingLunchAtNoon(User user, WorkmateViewHolder holder) {
+        if (user.getLunchId() != null) {
+            LunchFirestoreDAO.getLunch(user.getLunchId()).addOnSuccessListener(documentSnapshot -> {
+                boolean isEating;
+
+                Lunch userLunch = documentSnapshot.toObject(Lunch.class);
+
+                Date todayReferenceHour = new Date();
+                todayReferenceHour.setHours(14);
+                todayReferenceHour.setMinutes(0);
+
+                Date dateNow = new Date();
+
+                if (userLunch.getLunchDate().before(dateNow)) {
+                    if (dateNow.after(todayReferenceHour)) {
+                        isEating = userLunch.getLunchDate().after(todayReferenceHour);
+                    } else {
+                        todayReferenceHour.setDate(todayReferenceHour.getDate() - 1);
+                        isEating = userLunch.getLunchDate().after(todayReferenceHour);
+                    }
+                } else {
+                    isEating = false;
+                    Log.w(this.getClass().getSimpleName(), "The day of user launch is after the date now");
+                }
+                if (isEating) {
+                    holder.tvLaunchPlaces.setTextColor(Color.BLACK);
+                    holder.tvLaunchPlaces.setText(String.format(Locale.getDefault(), "%s is eating at %s", user.getUsername(), user.getLunchId())); // TODO: change user.getLunchId() with restaurant name
+                } else {
+                    holder.tvLaunchPlaces.setTextColor(Color.GRAY);
+                    holder.tvLaunchPlaces.setText(String.format(Locale.getDefault(), "%s hasn't decided yet", user.getUsername()));
+                }
+
+            });
+        } else {
+            holder.tvLaunchPlaces.setTextColor(Color.GRAY);
+            holder.tvLaunchPlaces.setText(String.format(Locale.getDefault(), "%s hasn't decided yet", user.getUsername()));
+        }
     }
 
     @Override

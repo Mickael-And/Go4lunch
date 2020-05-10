@@ -17,7 +17,7 @@ import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.textview.MaterialTextView;
 import com.mickael.go4lunch.R;
-import com.mickael.go4lunch.data.model.placesapi.Restaurant;
+import com.mickael.go4lunch.data.model.Restaurant;
 import com.mickael.go4lunch.ui.map.fragment.restaurant.RestaurantFragment.OnItemClickListener;
 
 import java.util.List;
@@ -52,12 +52,17 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
         Restaurant restaurant = this.restaurants.get(position);
 
         holder.restaurantName.setText(restaurant.getName());
-        holder.distanceRestaurantToDevice.setText(this.getDistance(restaurant)); //TODO: Search distance to restaurant
+        holder.distanceRestaurantToDevice.setText(this.getDistance(restaurant));
         holder.restaurantAdress.setText(restaurant.getVicinity());
         holder.restaurantRating.setRating((int) Double.parseDouble(restaurant.getRating()));
         if (restaurant.getPhotos() != null) {
             this.updateItemPhoto(holder, restaurant);
         }
+        this.updateItemHours(holder, restaurant);
+        holder.itemView.setOnClickListener(view -> clickListener.onClick(restaurant));
+    }
+
+    private void updateItemHours(RestaurantViewHolder holder, Restaurant restaurant) { // TODO: remplacer les string en ressources
         if (restaurant.getOpeningHours() != null) {
             if (restaurant.getOpeningHours().isOpenNow()) {
                 holder.openingHours.setText("Open");
@@ -70,7 +75,6 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
             holder.openingHours.setTextColor(Color.BLACK);
             holder.openingHours.setText("Not specified");
         }
-        holder.itemView.setOnClickListener(view -> clickListener.onClick(restaurant));
     }
 
     private void updateItemPhoto(RestaurantViewHolder holder, Restaurant restaurant) {

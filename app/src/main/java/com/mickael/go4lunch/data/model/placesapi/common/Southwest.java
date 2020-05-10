@@ -1,4 +1,4 @@
-package com.mickael.go4lunch.data.model.placesapi;
+package com.mickael.go4lunch.data.model.placesapi.common;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,7 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Northeast {
+public class Southwest {
     private String lng;
 
     private String lat;

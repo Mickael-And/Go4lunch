@@ -1,4 +1,4 @@
-package com.mickael.go4lunch.data.model.placesapi;
+package com.mickael.go4lunch.data.model.placesapi.common;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,9 +12,8 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Viewport {
+public class Geometry {
+    private Viewport viewport;
 
-    private Southwest southwest;
-
-    private Northeast northeast;
+    private Location location;
 }

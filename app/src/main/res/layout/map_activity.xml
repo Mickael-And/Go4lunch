@@ -27,13 +27,21 @@
 
         </com.google.android.material.appbar.AppBarLayout>
 
-        <include layout="@layout/content_map_activity" />
+        <fragment
+            android:id="@+id/nav_host_fragment"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:defaultNavHost="true"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:navGraph="@navigation/bottom_navigation" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottom_navigation_bar"
             style="@style/Widget.MaterialComponents.BottomNavigationView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
             android:layout_gravity="bottom"
             app:menu="@menu/bottom_navigation_menu" />
 
@@ -48,6 +56,6 @@
         app:headerLayout="@layout/navigation_header"
         app:itemIconTint="@android:color/white"
         app:itemTextColor="@android:color/white"
-        app:menu="@menu/navigation_menu" />
+        app:menu="@menu/drawer_navigation_menu" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -27,4 +27,7 @@
     <string name="error_no_internet">No internet</string>
     <string name="error_unknown_error">Unknown error</string>
     <string name="navigation_header_profil_image_description">User Profil image</string>
+    <string name="map_fragment_title">I\'m Hungry!</string>
+    <string name="restaurant_fragment_title">I\'m hungry!</string>
+    <string name="workmates_fragment_title">Available workmates</string>
 </resources>

@@ -45,11 +45,6 @@ public class WorkmateFragment extends DaggerFragment {
 
     private WorkmatesListAdapter workmatesListAdapter;
 
-    // TODO: Constructeur vide ?
-    public static WorkmateFragment newInstance() {
-        return new WorkmateFragment();
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

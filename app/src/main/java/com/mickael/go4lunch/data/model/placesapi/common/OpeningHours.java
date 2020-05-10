@@ -1,7 +1,9 @@
-package com.mickael.go4lunch.data.model.placesapi;
+package com.mickael.go4lunch.data.model.placesapi.common;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+
+import java.util.List;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

@@ -23,10 +23,9 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.net.PlacesClient;
 import com.google.android.material.textview.MaterialTextView;
 import com.mickael.go4lunch.R;
-import com.mickael.go4lunch.data.model.placesapi.Restaurant;
+import com.mickael.go4lunch.data.model.Restaurant;
 import com.mickael.go4lunch.di.ViewModelFactory;
 import com.mickael.go4lunch.utils.PermissionUtils;
 
@@ -70,14 +69,7 @@ public class RestaurantFragment extends DaggerFragment {
     private static final String RESTAURANT_TYPE_PLACES = "restaurant";
 
     @Nullable
-    private LatLng deviceLocation;
-
-    private PlacesClient placesClient;
-
-    // TODO: Constructeur vide ?
-    public static RestaurantFragment newInstance() {
-        return new RestaurantFragment();
-    }
+    private LatLng deviceLocation; // TODO: Mettre dans ViewModel ? Null au passage en paysage et inversement
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -85,7 +77,7 @@ public class RestaurantFragment extends DaggerFragment {
         this.viewModel = new ViewModelProvider(this, this.viewModelFactory).get(RestaurantFragmentViewModel.class);
         this.fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
         Places.initialize(getContext(), getString(R.string.google_maps_key));
-        this.placesClient = Places.createClient(getContext());
+        Places.createClient(getContext());
         this.viewModel.getRestaurants().observe(this, restaurants -> { //TODO: Create method
             if (restaurants != null && !restaurants.isEmpty()) {
                 this.recyclerView.setVisibility(View.VISIBLE);
@@ -99,8 +91,7 @@ public class RestaurantFragment extends DaggerFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_restaurant_list, container, false);
         ButterKnife.bind(this, view);
         return view;
@@ -109,7 +100,7 @@ public class RestaurantFragment extends DaggerFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        this.restaurantsListAdapter = new RestaurantListAdapter(new ArrayList<>(), restaurant -> System.out.println(restaurant.getName()));
+        this.restaurantsListAdapter = new RestaurantListAdapter(new ArrayList<>(), restaurant -> System.out.println(restaurant.getName())); // TODO: implement restaurant details activity
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this.recyclerView.getContext(), LinearLayoutManager.VERTICAL);
         this.recyclerView.addItemDecoration(dividerItemDecoration);
         this.recyclerView.setAdapter(this.restaurantsListAdapter);

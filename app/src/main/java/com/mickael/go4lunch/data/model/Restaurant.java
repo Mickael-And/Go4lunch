@@ -1,7 +1,11 @@
-package com.mickael.go4lunch.data.model.placesapi;
+package com.mickael.go4lunch.data.model;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
+import com.mickael.go4lunch.data.model.placesapi.common.Geometry;
+import com.mickael.go4lunch.data.model.placesapi.common.OpeningHours;
+import com.mickael.go4lunch.data.model.placesapi.common.Photo;
+import com.mickael.go4lunch.data.model.placesapi.common.PlusCode;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

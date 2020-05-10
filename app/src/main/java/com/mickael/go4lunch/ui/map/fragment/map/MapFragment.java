@@ -26,9 +26,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.api.net.PlacesClient;
 import com.mickael.go4lunch.R;
-import com.mickael.go4lunch.data.model.placesapi.Restaurant;
+import com.mickael.go4lunch.data.model.Restaurant;
 import com.mickael.go4lunch.di.ViewModelFactory;
 import com.mickael.go4lunch.utils.PermissionUtils;
 
@@ -41,7 +40,6 @@ import butterknife.ButterKnife;
 import dagger.android.support.DaggerFragment;
 
 public class MapFragment extends DaggerFragment implements OnMapReadyCallback {
-
     @BindView(R.id.map)
     MapView mapView;
 
@@ -52,7 +50,7 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback {
 
     private static final String TAG = MapFragment.class.getSimpleName();
 
-    private GoogleMap googleMap;
+    private GoogleMap googleMap; // TODO: null passage en landscape
 
     private FusedLocationProviderClient fusedLocationProviderClient;
 
@@ -66,20 +64,13 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback {
 
     private static final String RESTAURANT_TYPE_PLACES = "restaurant";
 
-    private PlacesClient placesClient;
-
-    public static MapFragment newInstance() {
-        return new MapFragment();
-    }
-
-
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.viewModel = new ViewModelProvider(this, viewModelFactory).get(MapFragmentViewModel.class);
         this.fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
         Places.initialize(getContext(), getString(R.string.google_maps_key));
-        this.placesClient = Places.createClient(getContext());
+        Places.createClient(getContext());
         this.viewModel.getRestaurants().observe(this, this::displayRestaurants);
     }
 
@@ -93,9 +84,36 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback {
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        this.mapView.onStop();
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
+        this.mapView.onStart();
         this.mapView.getMapAsync(this);
+    }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        this.mapView.onResume();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        this.mapView.onDestroy();
+    }
+
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        this.mapView.onLowMemory();
     }
 
     @Override
@@ -126,24 +144,6 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback {
         if (this.googleMap != null) {
             this.googleMap.setMyLocationEnabled(true);
         }
-    }
-
-    @Override
-    public void onResume() {
-        this.mapView.onResume();
-        super.onResume();
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        this.mapView.onDestroy();
-    }
-
-    @Override
-    public void onLowMemory() {
-        super.onLowMemory();
-        this.mapView.onLowMemory();
     }
 
     private void updateMapOnLocationDevice() {

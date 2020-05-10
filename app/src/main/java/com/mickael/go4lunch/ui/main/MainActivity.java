@@ -11,14 +11,14 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.mickael.go4lunch.R;
-import com.mickael.go4lunch.data.api.firebase.UserDAO;
+import com.mickael.go4lunch.data.dao.UserFirestoreDAO;
 import com.mickael.go4lunch.ui.map.activity.MapActivity;
 
 import java.util.Collections;
+import java.util.UUID;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -92,9 +92,8 @@ public class MainActivity extends AppCompatActivity {
                     String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
                     String username = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
                     String urlPicture = FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl() != null ? FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString() : null;
-                    UserDAO.createUser(userId, username, urlPicture, null).addOnFailureListener(e -> Toast.makeText(this, , getString(R.string.error_unknown_error), Toast.LENGTH_SHORT).show());
+                    UserFirestoreDAO.createUser(userId, username, urlPicture, null).addOnFailureListener(e -> Toast.makeText(this, getString(R.string.error_unknown_error), Toast.LENGTH_SHORT).show());
                 }
-
                 Intent intent = new Intent(this, MapActivity.class);
                 startActivity(intent);
                 finish();

@@ -7,9 +7,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
@@ -17,20 +15,20 @@ import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.AppBarConfiguration;
+import androidx.navigation.ui.NavigationUI;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textview.MaterialTextView;
 import com.mickael.go4lunch.R;
 import com.mickael.go4lunch.di.ViewModelFactory;
 import com.mickael.go4lunch.ui.main.MainActivity;
-import com.mickael.go4lunch.ui.map.fragment.map.MapFragment;
-import com.mickael.go4lunch.ui.map.fragment.restaurant.RestaurantFragment;
-import com.mickael.go4lunch.ui.map.fragment.workmate.WorkmateFragment;
 
 import javax.inject.Inject;
 
@@ -70,9 +68,8 @@ public class MapActivity extends DaggerAppCompatActivity {
         this.configureToolbar();
         this.configureDrawerLayout();
         this.configureNavigationView();
-        this.configureBottomNavigation(savedInstanceState);
+        this.configureBottomNavigation();
         this.updateUserInformation();
-
     }
 
     private void updateUserInformation() {
@@ -150,43 +147,12 @@ public class MapActivity extends DaggerAppCompatActivity {
 
     /**
      * Configuration of the {@link BottomNavigationView}.
-     *
-     * @param savedInstanceState
      */
-    private void configureBottomNavigation(Bundle savedInstanceState) {
-        this.bottomNavigationBar.setOnNavigationItemSelectedListener(item -> this.updateFragment(item.getItemId()));
-        final int bottomNavigationViewSelectedItemId = savedInstanceState == null ? this.bottomNavigationBar.getSelectedItemId() :
-                savedInstanceState.getInt("opened_fragment", this.bottomNavigationBar.getSelectedItemId()); // TODO: Constante "opened_fragment" et magic number
-
-        this.bottomNavigationBar.setSelectedItemId(bottomNavigationViewSelectedItemId);
-    }
-
-    @Override
-    protected void onSaveInstanceState(@NonNull Bundle outState) {
-        outState.putInt("opened_fragment", this.bottomNavigationBar.getSelectedItemId()); // TODO: Constante "opened_fragment"
-        super.onSaveInstanceState(outState);
-    }
-
-    /**
-     * Update {@link androidx.fragment.app.Fragment} to display.
-     *
-     * @param itemId item id
-     * @return true
-     */
-    private boolean updateFragment(int itemId) {
-        switch (itemId) {
-            case R.id.map_item:
-                getSupportFragmentManager().beginTransaction().replace(R.id.map_activity_container, MapFragment.newInstance()).commit();
-                return true;
-            case R.id.list_item:
-                getSupportFragmentManager().beginTransaction().replace(R.id.map_activity_container, RestaurantFragment.newInstance()).commit();
-                return true;
-            case R.id.workmates_item:
-                getSupportFragmentManager().beginTransaction().replace(R.id.map_activity_container, WorkmateFragment.newInstance()).commit();
-                return true;
-            default:
-                return false;
-        }
+    private void configureBottomNavigation() {
+        AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.navigation_map, R.id.navigation_restaurants, R.id.navigation_workmates).build();
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        NavigationUI.setupActionBarWithNavController(this, navController,appBarConfiguration);
+        NavigationUI.setupWithNavController(this.bottomNavigationBar, navController);
     }
 
     @Override

@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.mickael.go4lunch.data.api.firebase.UserDAO;
+import com.mickael.go4lunch.data.dao.UserFirestoreDAO;
 import com.mickael.go4lunch.data.model.User;
 
 import java.util.ArrayList;
@@ -24,17 +24,22 @@ public class WorkmateFragmentViewModel extends ViewModel {
     @Inject
     public WorkmateFragmentViewModel() {
         this.users = new MutableLiveData<>();
-        UserDAO.getUsersCollection().addSnapshotListener((queryDocumentSnapshots, e) -> {
+        UserFirestoreDAO.getUsersCollection().addSnapshotListener((queryDocumentSnapshots, e) -> {
 
             if (e != null) {
                 Log.w(this.getClass().getSimpleName(), "Listen failed.", e);
                 return;
             }
-            List<User> queryUsers = new ArrayList<>();
-            for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                queryUsers.add(documentSnapshot.toObject(User.class));
+            if (queryDocumentSnapshots != null) {
+                List<User> queryUsers = new ArrayList<>();
+                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                    queryUsers.add(documentSnapshot.toObject(User.class));
+                }
+                this.users.setValue(queryUsers);
             }
-            this.users.setValue(queryUsers);
         });
     }
+
+
+
 }

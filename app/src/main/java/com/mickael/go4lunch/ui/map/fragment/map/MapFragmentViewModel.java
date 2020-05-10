@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.model.LatLng;
-import com.mickael.go4lunch.data.model.placesapi.Restaurant;
+import com.mickael.go4lunch.data.model.Restaurant;
 import com.mickael.go4lunch.data.repository.RestaurantRepository;
 
 import java.util.Arrays;

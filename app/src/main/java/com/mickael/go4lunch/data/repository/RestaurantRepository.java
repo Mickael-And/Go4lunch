@@ -2,7 +2,7 @@ package com.mickael.go4lunch.data.repository;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.mickael.go4lunch.data.api.RestaurantApiService;
-import com.mickael.go4lunch.data.model.placesapi.NearbySearchPlacesApiResponse;
+import com.mickael.go4lunch.data.model.placesapi.response.NearbySearchPlacesApiResponse;
 
 import java.util.Locale;
 
@@ -24,5 +24,4 @@ public class RestaurantRepository {
     public Single<NearbySearchPlacesApiResponse> getNearbyPlaces(LatLng location, String radius, String type) {
         return this.restaurantApiService.nearbySearchRequest(String.format(Locale.getDefault(), "%s,%s", location.latitude, location.longitude), radius, type);
     }
-
 }
