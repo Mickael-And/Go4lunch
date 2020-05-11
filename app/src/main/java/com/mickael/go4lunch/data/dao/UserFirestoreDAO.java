@@ -19,7 +19,7 @@ public class UserFirestoreDAO {
     // CREATE
     public static Task<Void> createUser(String userID, String username, String urlPicture, String lunchId) {
         User userToCreate = new User(userID, username, urlPicture, lunchId);
-        return UserFirestoreDAO.getUsersCollection().document().set(userToCreate);
+        return UserFirestoreDAO.getUsersCollection().document(userID).set(userToCreate);
     }
 
     // READ

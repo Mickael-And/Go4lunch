@@ -7,6 +7,7 @@ import android.widget.Toast;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
@@ -15,19 +16,27 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.mickael.go4lunch.R;
 import com.mickael.go4lunch.data.dao.UserFirestoreDAO;
+import com.mickael.go4lunch.di.ViewModelFactory;
 import com.mickael.go4lunch.ui.map.activity.MapActivity;
 
 import java.util.Collections;
-import java.util.UUID;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import dagger.android.support.DaggerAppCompatActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends DaggerAppCompatActivity {
 
     @BindView(R.id.main_coordinator_Layout)
     CoordinatorLayout mainCoordinatorLayout;
+
+    @Inject
+    ViewModelFactory viewModelFactory;
+
+    private MainActivityViewModel viewModel;
 
     /**
      * Identifier for Sign-In Activity.
@@ -39,7 +48,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         this.setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
-        if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+        this.viewModel = new ViewModelProvider(this, this.viewModelFactory).get(MainActivityViewModel.class);
+        if (this.viewModel.isCurrentUserLOgged()) {
             Intent intent = new Intent(this, MapActivity.class);
             startActivity(intent);
             finish();
@@ -88,12 +98,7 @@ public class MainActivity extends AppCompatActivity {
     private void handleResponseAfterSignIn(int requestCode, int resultCode, Intent data) {
         if (requestCode == CODE_SIGN_IN_ACTIVITY) {
             if (resultCode == RESULT_OK) {
-                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
-                    String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                    String username = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
-                    String urlPicture = FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl() != null ? FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString() : null;
-                    UserFirestoreDAO.createUser(userId, username, urlPicture, null).addOnFailureListener(e -> Toast.makeText(this, getString(R.string.error_unknown_error), Toast.LENGTH_SHORT).show());
-                }
+                this.viewModel.createUserIfNeeded();
                 Intent intent = new Intent(this, MapActivity.class);
                 startActivity(intent);
                 finish();

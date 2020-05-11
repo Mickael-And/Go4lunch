@@ -1,5 +1,6 @@
 package com.mickael.go4lunch.di;
 
+import com.mickael.go4lunch.ui.main.MainActivity;
 import com.mickael.go4lunch.ui.map.activity.MapActivity;
 import com.mickael.go4lunch.ui.map.fragment.map.MapFragment;
 import com.mickael.go4lunch.ui.map.fragment.restaurant.RestaurantFragment;
@@ -11,6 +12,9 @@ import dagger.android.ContributesAndroidInjector;
 
 @Module
 public abstract class ActivityBuilder {
+    @ContributesAndroidInjector
+    abstract MainActivity bindMainActivity();
+
     @ContributesAndroidInjector
     abstract MapActivity bindMapActivity();
 

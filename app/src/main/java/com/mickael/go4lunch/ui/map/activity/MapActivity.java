@@ -151,7 +151,7 @@ public class MapActivity extends DaggerAppCompatActivity {
     private void configureBottomNavigation() {
         AppBarConfiguration appBarConfiguration = new AppBarConfiguration.Builder(R.id.navigation_map, R.id.navigation_restaurants, R.id.navigation_workmates).build();
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
-        NavigationUI.setupActionBarWithNavController(this, navController,appBarConfiguration);
+        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration);
         NavigationUI.setupWithNavController(this.bottomNavigationBar, navController);
     }
 

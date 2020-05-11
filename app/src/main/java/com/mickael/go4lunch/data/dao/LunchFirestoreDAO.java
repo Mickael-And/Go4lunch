@@ -20,7 +20,7 @@ public class LunchFirestoreDAO {
     // CREATE
     public static Task<Void> createLunch(String lunchID, String userId, String lunchPlacesId, Date lunchDate) {
         Lunch lunchToCreate = new Lunch(lunchID, userId, lunchPlacesId, lunchDate);
-        return LunchFirestoreDAO.getLunchesCollection().document().set(lunchToCreate);
+        return LunchFirestoreDAO.getLunchesCollection().document(lunchID).set(lunchToCreate);
     }
 
     // READ

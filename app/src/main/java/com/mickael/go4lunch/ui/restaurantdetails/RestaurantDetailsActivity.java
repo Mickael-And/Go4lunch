@@ -67,8 +67,7 @@ public class RestaurantDetailsActivity extends DaggerAppCompatActivity {
     }
 
     private void updateHeaderPhoto(Restaurant restaurant) {
-        System.out.println("Restaurant details photos = " + restaurant.getPhotos());
-        if(restaurant.getPhotos() != null){
+        if (restaurant.getPhotos() != null) {
             String url = String.format(Locale.getDefault(), "https://maps.googleapis.com/maps/api/place/photo?" +
                     "maxheight=1600" +
                     "&photoreference=%s" +

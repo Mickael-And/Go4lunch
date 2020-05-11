@@ -24,7 +24,7 @@ public class RestaurantFirestoreDAO {
     public static Task<Void> createRestaurant(String vicinity, String internationalPhoneNumber, Geometry geometry, List<Photo> photos,
                                               String name, String placeId, String rating, String website, OpeningHours openingHours) {
         Restaurant restaurantToCreate = new Restaurant(vicinity, internationalPhoneNumber, geometry, photos, name, placeId, rating, website, openingHours);
-        return RestaurantFirestoreDAO.getRestaurantsCollection().document().set(restaurantToCreate);
+        return RestaurantFirestoreDAO.getRestaurantsCollection().document(placeId).set(restaurantToCreate);
     }
 
     // READ

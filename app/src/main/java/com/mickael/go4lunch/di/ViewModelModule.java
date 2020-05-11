@@ -2,6 +2,7 @@ package com.mickael.go4lunch.di;
 
 import androidx.lifecycle.ViewModel;
 
+import com.mickael.go4lunch.ui.main.MainActivityViewModel;
 import com.mickael.go4lunch.ui.map.activity.MapActivityViewModel;
 import com.mickael.go4lunch.ui.map.fragment.map.MapFragmentViewModel;
 import com.mickael.go4lunch.ui.map.fragment.restaurant.RestaurantFragmentViewModel;
@@ -27,6 +28,11 @@ public abstract class ViewModelModule {
     @interface ViewModelKey {
         Class<? extends ViewModel> value();
     }
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MainActivityViewModel.class)
+    abstract ViewModel provideMainActivityViewModel(MainActivityViewModel mainActivityViewModel);
 
     @Binds
     @IntoMap
