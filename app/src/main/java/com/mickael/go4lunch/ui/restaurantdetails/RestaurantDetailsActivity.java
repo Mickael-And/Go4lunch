@@ -1,5 +1,6 @@
 package com.mickael.go4lunch.ui.restaurantdetails;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.RatingBar;
@@ -8,10 +9,12 @@ import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textview.MaterialTextView;
 import com.mickael.go4lunch.R;
 import com.mickael.go4lunch.data.model.Restaurant;
 import com.mickael.go4lunch.di.ViewModelFactory;
+import com.mickael.go4lunch.ui.main.MainActivity;
 import com.mickael.go4lunch.ui.map.fragment.restaurant.RestaurantFragment;
 
 import java.util.Locale;
@@ -20,6 +23,7 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import dagger.android.support.DaggerAppCompatActivity;
 
 public class RestaurantDetailsActivity extends DaggerAppCompatActivity {
@@ -31,6 +35,8 @@ public class RestaurantDetailsActivity extends DaggerAppCompatActivity {
     RatingBar restaurantRating;
     @BindView(R.id.tv_restaurant_details_adress)
     MaterialTextView restaurantAddress;
+    @BindView(R.id.fab_choose_restaurant)
+    FloatingActionButton fabRestaurantChoosen;
 
     @Inject
     ViewModelFactory viewModelFactory;
@@ -45,10 +51,20 @@ public class RestaurantDetailsActivity extends DaggerAppCompatActivity {
         this.viewModel = new ViewModelProvider(this, viewModelFactory).get(RestaurantDetailsViewModel.class);
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            System.out.println(extras.getString((RestaurantFragment.EXTRAS_RESTAURANT_ID)));
             this.viewModel.getSelectedRestaurant(extras.getString(RestaurantFragment.EXTRAS_RESTAURANT_ID));
         }
         this.viewModel.getLiveRestaurant().observe(this, this::updateComponentsValues);
+        this.viewModel.getLiveIsSelected().observe(this, this::updateFab);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!this.viewModel.isCurrentUserLOgged()) {
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
     }
 
 
@@ -58,6 +74,15 @@ public class RestaurantDetailsActivity extends DaggerAppCompatActivity {
             this.restaurantName.setText(restaurant.getName());
             this.restaurantRating.setRating(this.updateRestaurantRating(restaurant.getRating()));
             this.restaurantAddress.setText(restaurant.getVicinity());
+        }
+    }
+
+    private void updateFab(boolean isSelected) {
+        System.out.println("isSelected = " + isSelected);
+        if (isSelected) {
+            this.fabRestaurantChoosen.setImageResource(R.drawable.ic_check_circle_black_24dp);
+        } else {
+            this.fabRestaurantChoosen.setImageResource(R.drawable.ic_radio_button_unchecked_black_24dp);
         }
     }
 
@@ -77,5 +102,16 @@ public class RestaurantDetailsActivity extends DaggerAppCompatActivity {
                     .centerCrop()
                     .into(this.appBarPicture);
         }
+    }
+
+    @OnClick(R.id.fab_choose_restaurant)
+    public void chooseRestaurant() {
+        this.viewModel.chooseRestaurant();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        this.viewModel.saveLunch();
     }
 }
