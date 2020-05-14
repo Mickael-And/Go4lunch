@@ -43,14 +43,12 @@ public class MainActivityViewModel extends ViewModel {
                         String userId = firebaseUser.getUid();
                         String username = firebaseUser.getDisplayName();
                         String urlPicture = firebaseUser.getPhotoUrl() != null ? FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString() : null;
-                        UserFirestoreDAO.createUser(userId, username, urlPicture, null).addOnFailureListener(e -> Log.e(TAG, "Can't create user in firestore database", e));
+                        UserFirestoreDAO.createUser(userId, username, urlPicture, null, null).addOnFailureListener(e -> Log.e(TAG, "Can't create user in firestore database", e));
                     }
                 } else {
                     Log.e(TAG, "Can't check if connected user exist in firestore database");
                 }
             });
-
-
         }
     }
 }

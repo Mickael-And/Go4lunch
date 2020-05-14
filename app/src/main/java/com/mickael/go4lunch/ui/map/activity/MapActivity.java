@@ -72,6 +72,16 @@ public class MapActivity extends DaggerAppCompatActivity {
         this.updateUserInformation();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (!this.viewModel.isCurrentUserLOgged()){
+            Intent intent = new Intent(this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
+    }
+
     private void updateUserInformation() {
         if (this.viewModel.isCurrentUserLOgged()) {
             if (this.viewModel.getCurrentUser().getPhotoUrl() != null) {

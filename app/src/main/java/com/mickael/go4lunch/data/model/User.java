@@ -1,5 +1,9 @@
 package com.mickael.go4lunch.data.model;
 
+import androidx.annotation.Nullable;
+
+import java.util.Date;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,5 +17,8 @@ public class User {
     private String userId;
     private String username;
     private String urlPicture;
-    private String lunchId;
+    @Nullable
+    private String lunchplaceId;
+    @Nullable
+    private Date lunchDate;
 }
