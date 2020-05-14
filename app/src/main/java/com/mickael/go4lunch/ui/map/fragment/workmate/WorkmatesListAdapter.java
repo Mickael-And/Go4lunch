@@ -12,12 +12,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.mickael.go4lunch.R;
-import com.mickael.go4lunch.data.dao.LunchFirestoreDAO;
-import com.mickael.go4lunch.data.model.Lunch;
+import com.mickael.go4lunch.data.model.Restaurant;
 import com.mickael.go4lunch.data.model.User;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -30,12 +29,16 @@ import butterknife.ButterKnife;
  */
 public class WorkmatesListAdapter extends RecyclerView.Adapter<WorkmatesListAdapter.WorkmateViewHolder> {
 
+    private static final String TAG = WorkmatesListAdapter.class.getSimpleName();
+
     private List<User> users;
     private final WorkmateFragment.OnItemClickListener clickListener;
+    private final WorkmateFragmentViewModel viewModel;
 
-    public WorkmatesListAdapter(List<User> users, WorkmateFragment.OnItemClickListener listener) {
+    WorkmatesListAdapter(WorkmateFragmentViewModel viewModel, List<User> users, WorkmateFragment.OnItemClickListener listener) {
         this.users = users;
         this.clickListener = listener;
+        this.viewModel = viewModel;
     }
 
     @NonNull
@@ -52,48 +55,14 @@ public class WorkmatesListAdapter extends RecyclerView.Adapter<WorkmatesListAdap
                 .circleCrop()
                 .into(holder.imgUser);
 
-        this.isEatingLunchAtNoon(user, holder);
-
-        holder.itemView.setOnClickListener(v -> this.clickListener.onClick(user));
-    }
-
-    private void isEatingLunchAtNoon(User user, WorkmateViewHolder holder) {
-        if (user.getLunchId() != null) {
-            LunchFirestoreDAO.getLunch(user.getLunchId()).addOnSuccessListener(documentSnapshot -> {
-                boolean isEating;
-
-                Lunch userLunch = documentSnapshot.toObject(Lunch.class);
-
-                Date todayReferenceHour = new Date();
-                todayReferenceHour.setHours(14);
-                todayReferenceHour.setMinutes(0);
-
-                Date dateNow = new Date();
-
-                if (userLunch.getLunchDate().before(dateNow)) {
-                    if (dateNow.after(todayReferenceHour)) {
-                        isEating = userLunch.getLunchDate().after(todayReferenceHour);
-                    } else {
-                        todayReferenceHour.setDate(todayReferenceHour.getDate() - 1);
-                        isEating = userLunch.getLunchDate().after(todayReferenceHour);
-                    }
-                } else {
-                    isEating = false;
-                    Log.w(this.getClass().getSimpleName(), "The day of user launch is after the date now");
-                }
-                if (isEating) {
-                    holder.tvLaunchPlaces.setTextColor(Color.BLACK);
-                    holder.tvLaunchPlaces.setText(String.format(Locale.getDefault(), "%s is eating at %s", user.getUsername(), user.getLunchId())); // TODO: change user.getLunchId() with restaurant name
-                } else {
-                    holder.tvLaunchPlaces.setTextColor(Color.GRAY);
-                    holder.tvLaunchPlaces.setText(String.format(Locale.getDefault(), "%s hasn't decided yet", user.getUsername()));
-                }
-
-            });
+        if (this.viewModel.isEatingLunchAtNoon(user)) {
+            holder.tvLaunchPlaces.setTextColor(Color.BLACK);
+            this.updateNoonRestaurantName(user, holder);
         } else {
             holder.tvLaunchPlaces.setTextColor(Color.GRAY);
             holder.tvLaunchPlaces.setText(String.format(Locale.getDefault(), "%s hasn't decided yet", user.getUsername()));
         }
+        holder.itemView.setOnClickListener(v -> this.clickListener.onClick(user));
     }
 
     @Override
@@ -101,11 +70,36 @@ public class WorkmatesListAdapter extends RecyclerView.Adapter<WorkmatesListAdap
         return users.size();
     }
 
-    public void updateList(List<User> users) {
+    void updateList(List<User> users) {
         this.users = users;
         notifyDataSetChanged();
     }
 
+
+    private void updateNoonRestaurantName(User user, WorkmateViewHolder holder) {
+        this.viewModel.getRestaurant(user.getLunchplaceId()).addOnCompleteListener(task -> {
+            String restaurantName;
+            if (task.isSuccessful()) {
+                DocumentSnapshot documentSnapshot = task.getResult();
+                if (documentSnapshot != null && documentSnapshot.exists()) {
+                    Restaurant restaurant = documentSnapshot.toObject(Restaurant.class);
+                    if (restaurant != null) {
+                        restaurantName = restaurant.getName();
+                    } else {
+                        Log.d(TAG, "Response is null");
+                        restaurantName = "unknown restaurant";
+                    }
+                } else {
+                    restaurantName = "unknown restaurant";
+                    Log.d(TAG, "No such document");
+                }
+            } else {
+                Log.d(TAG, "get failed with ", task.getException());
+                restaurantName = "unknown restaurant";
+            }
+            holder.tvLaunchPlaces.setText(String.format(Locale.getDefault(), "%s is eating at %s", user.getUsername(), restaurantName));
+        });
+    }
 
     public static class WorkmateViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.img_user)
