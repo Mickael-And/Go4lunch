@@ -102,8 +102,7 @@ public class RestaurantFragment extends DaggerFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        this.restaurantsListAdapter = new RestaurantListAdapter(new ArrayList<>(), restaurant -> {
-            System.out.println(restaurant.getPlaceId());
+        this.restaurantsListAdapter = new RestaurantListAdapter(this.viewModel, new ArrayList<>(), restaurant -> {
             Intent intent = new Intent(getActivity(), RestaurantDetailsActivity.class);
             intent.putExtra(EXTRAS_RESTAURANT_ID, restaurant.getPlaceId());
             startActivity(intent);

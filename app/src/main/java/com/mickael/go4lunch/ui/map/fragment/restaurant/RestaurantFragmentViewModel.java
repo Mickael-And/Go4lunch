@@ -6,9 +6,13 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.QuerySnapshot;
+import com.mickael.go4lunch.data.dao.UserFirestoreDAO;
 import com.mickael.go4lunch.data.model.Restaurant;
 import com.mickael.go4lunch.data.repository.RestaurantRepository;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -51,6 +55,28 @@ public class RestaurantFragmentViewModel extends ViewModel {
                                 Log.i(RestaurantFragmentViewModel.class.getSimpleName(), "Nearby search request: Api call didn't work ");
                             }
                         });
+    }
+
+    public Task<QuerySnapshot> getNumberOfWorkmatesByPlaceAtNoon(String placeId) {
+        return UserFirestoreDAO.getUsersCollection()
+                .whereEqualTo("lunchplaceId", placeId)
+                .get();
+    }
+
+    public Date getReferenceDate() {
+        Date referenceDate = new Date();
+        referenceDate.setHours(14);
+        referenceDate.setMinutes(0);
+        referenceDate.setSeconds(0);
+
+        Date dateNow = new Date();
+
+        if (dateNow.after(referenceDate)) {
+            return referenceDate;
+        } else {
+            referenceDate.setDate(referenceDate.getDate() - 1);
+            return referenceDate;
+        }
     }
 
     @Override

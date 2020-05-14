@@ -16,10 +16,13 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.material.textview.MaterialTextView;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.mickael.go4lunch.R;
 import com.mickael.go4lunch.data.model.Restaurant;
+import com.mickael.go4lunch.data.model.User;
 import com.mickael.go4lunch.ui.map.fragment.restaurant.RestaurantFragment.OnItemClickListener;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -35,8 +38,10 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
     private List<Restaurant> restaurants;
     private final OnItemClickListener clickListener;
     private LatLng deviceLocation;
+    private RestaurantFragmentViewModel viewModel;
 
-    public RestaurantListAdapter(List<Restaurant> restaurants, OnItemClickListener listener) {
+    public RestaurantListAdapter(RestaurantFragmentViewModel viewModel, List<Restaurant> restaurants, OnItemClickListener listener) {
+        this.viewModel = viewModel;
         this.restaurants = restaurants;
         this.clickListener = listener;
     }
@@ -54,6 +59,7 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
         holder.restaurantName.setText(restaurant.getName());
         holder.distanceRestaurantToDevice.setText(this.getDistance(restaurant));
         holder.restaurantAdress.setText(restaurant.getVicinity());
+        this.updateNumberOfWorkmates(holder, restaurant);
         holder.restaurantRating.setRating(this.updateRestaurantRating(restaurant.getRating()));
         if (restaurant.getPhotos() != null) {
             this.updateItemPhoto(holder, restaurant);
@@ -62,18 +68,34 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
         holder.itemView.setOnClickListener(view -> clickListener.onClick(restaurant));
     }
 
-    private void updateItemHours(RestaurantViewHolder holder, Restaurant restaurant) { // TODO: remplacer les string en ressources
+    private void updateNumberOfWorkmates(RestaurantViewHolder holder, Restaurant restaurant) {
+        this.viewModel.getNumberOfWorkmatesByPlaceAtNoon(restaurant.getPlaceId()).addOnCompleteListener(task -> {
+            int cptWorkmatesAtNoon = 0;
+            Date dateReference = this.viewModel.getReferenceDate();
+            if (task.isSuccessful()) {
+                for (QueryDocumentSnapshot document : task.getResult()) {
+                    User user = document.toObject(User.class);
+                    if (user.getLunchDate().after(dateReference)) {
+                        cptWorkmatesAtNoon++;
+                    }
+                }
+                holder.workmatesNumber.setText(String.format(Locale.getDefault(), "(%d)", cptWorkmatesAtNoon));
+            }
+        });
+    }
+
+    private void updateItemHours(RestaurantViewHolder holder, Restaurant restaurant) {
         if (restaurant.getOpeningHours() != null) {
             if (restaurant.getOpeningHours().isOpenNow()) {
-                holder.openingHours.setText("Open");
+                holder.openingHours.setText(holder.itemView.getContext().getString(R.string.restaurant_open));
                 holder.openingHours.setTextColor(Color.BLACK);
             } else {
-                holder.openingHours.setText("Closed");
+                holder.openingHours.setText(holder.itemView.getContext().getString(R.string.restaurant_closed));
                 holder.openingHours.setTextColor(Color.RED);
             }
         } else {
             holder.openingHours.setTextColor(Color.BLACK);
-            holder.openingHours.setText("Not specified");
+            holder.openingHours.setText(holder.itemView.getContext().getString(R.string.unknown_opening_hours));
         }
     }
 
@@ -82,9 +104,6 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
                 "maxheight=1600" +
                 "&photoreference=%s" +
                 "&key=AIzaSyDuiYTUSAt7OeV6tIoXzTVil6XW5j-NCwc", restaurant.getPhotos().get(0).getPhotoReference());
-        System.out.println("Restaurant adapter photos = " + restaurant.getPhotos());
-        System.out.println("Restaurant adapter photos = " + restaurant.getPhotos().get(0));
-        System.out.println("Restaurant adapter photos = " + restaurant.getPhotos().get(0).getPhotoReference());
         Glide.with(holder.itemView)
                 .load(url)
                 .transform(new CenterCrop(), new RoundedCorners(25))
@@ -128,8 +147,8 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
         MaterialTextView distanceRestaurantToDevice;
         @BindView(R.id.tv_restaurant_adress)
         MaterialTextView restaurantAdress;
-        @BindView(R.id.img_workmates_number)
-        ImageView workmatesNumber;
+        @BindView(R.id.tv_workmates_number)
+        MaterialTextView workmatesNumber;
         @BindView(R.id.tv_opening_hours)
         MaterialTextView openingHours;
         @BindView(R.id.restaurant_rating)
