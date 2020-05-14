@@ -1,5 +1,6 @@
 package com.mickael.go4lunch.ui.map.fragment.workmate;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import com.google.android.material.textview.MaterialTextView;
 import com.mickael.go4lunch.R;
 import com.mickael.go4lunch.data.model.User;
 import com.mickael.go4lunch.di.ViewModelFactory;
+import com.mickael.go4lunch.ui.restaurantdetails.RestaurantDetailsActivity;
 
 import java.util.ArrayList;
 
@@ -23,6 +25,8 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.support.DaggerFragment;
+
+import static com.mickael.go4lunch.ui.map.fragment.restaurant.RestaurantFragment.EXTRAS_RESTAURANT_ID;
 
 /**
  * A fragment representing a list of Items.
@@ -71,7 +75,13 @@ public class WorkmateFragment extends DaggerFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        this.workmatesListAdapter = new WorkmatesListAdapter(new ArrayList<>(), user -> System.out.println(user.getUsername())); // TODO: Pas besoin de callback
+        this.workmatesListAdapter = new WorkmatesListAdapter(this.viewModel, new ArrayList<>(), user -> {
+            if (this.viewModel.isEatingLunchAtNoon(user)) {
+                Intent intent = new Intent(getActivity(), RestaurantDetailsActivity.class);
+                intent.putExtra(EXTRAS_RESTAURANT_ID, user.getLunchplaceId());
+                startActivity(intent);
+            }
+        });
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this.recyclerView.getContext(), LinearLayoutManager.VERTICAL);
         this.recyclerView.addItemDecoration(dividerItemDecoration);
         this.recyclerView.setAdapter(this.workmatesListAdapter);
