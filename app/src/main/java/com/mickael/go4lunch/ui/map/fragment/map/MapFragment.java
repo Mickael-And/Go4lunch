@@ -165,10 +165,19 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback {
 
     private void displayRestaurants(List<Restaurant> restaurants) {
         for (Restaurant restaurant : restaurants) {
-            this.googleMap.addMarker(new MarkerOptions()
-                    .position(new LatLng(restaurant.getGeometry().getLocation().getLat(), restaurant.getGeometry().getLocation().getLng()))
-                    .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN))
-                    .title(restaurant.getName()));
+            this.viewModel.getNumberOfWorkmateAtPlace(restaurant.getPlaceId()).addOnCompleteListener(task -> {
+               if (task.isSuccessful() && task.getResult().size() >= 1 ){
+                   this.googleMap.addMarker(new MarkerOptions()
+                           .position(new LatLng(restaurant.getGeometry().getLocation().getLat(), restaurant.getGeometry().getLocation().getLng()))
+                           .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN))
+                           .title(restaurant.getName()));
+               } else {
+                   this.googleMap.addMarker(new MarkerOptions()
+                           .position(new LatLng(restaurant.getGeometry().getLocation().getLat(), restaurant.getGeometry().getLocation().getLng()))
+                           .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
+                           .title(restaurant.getName()));
+               }
+            });
         }
     }
 
