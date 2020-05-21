@@ -2,6 +2,7 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/restaurant_details_coordinatorlayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -114,6 +115,7 @@
                     android:id="@+id/tv_restaurant_details_phone"
                     android:layout_width="0dp"
                     android:layout_height="80dp"
+                    android:background="@drawable/background_restaurant_details_button"
                     android:drawableTop="@drawable/ic_call_orange_24dp"
                     android:drawablePadding="10dp"
                     android:gravity="center"
@@ -130,6 +132,7 @@
                     android:id="@+id/tv_restaurant_details_like"
                     android:layout_width="0dp"
                     android:layout_height="80dp"
+                    android:background="@drawable/background_restaurant_details_button"
                     android:drawableTop="@drawable/ic_star_orange_24dp"
                     android:drawablePadding="10dp"
                     android:gravity="center"
@@ -146,6 +149,7 @@
                     android:id="@+id/tv_restaurant_details_website"
                     android:layout_width="0dp"
                     android:layout_height="80dp"
+                    android:background="@drawable/background_restaurant_details_button"
                     android:drawableTop="@drawable/ic_public_orange_24dp"
                     android:drawablePadding="10dp"
                     android:gravity="center"
@@ -163,7 +167,6 @@
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:layout_marginTop="2dp"
                 android:layout_marginBottom="2dp"
                 android:background="@color/browser_actions_divider_color" />
 

@@ -1,15 +1,18 @@
 package com.mickael.go4lunch.ui.restaurantdetails;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.RatingBar;
 
 import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textview.MaterialTextView;
 import com.mickael.go4lunch.R;
 import com.mickael.go4lunch.data.model.Restaurant;
@@ -27,6 +30,10 @@ import butterknife.OnClick;
 import dagger.android.support.DaggerAppCompatActivity;
 
 public class RestaurantDetailsActivity extends DaggerAppCompatActivity {
+    private static final int CALL_PHONE_PERMISSION_REQUEST_CODE = 2;
+
+    @BindView(R.id.restaurant_details_coordinatorlayout)
+    CoordinatorLayout coordinatorLayout;
     @BindView(R.id.appbar_picture)
     ImageView appBarPicture;
     @BindView(R.id.tv_restaurant_details_name)
@@ -103,9 +110,39 @@ public class RestaurantDetailsActivity extends DaggerAppCompatActivity {
         }
     }
 
+
     @OnClick(R.id.fab_choose_restaurant)
     public void chooseRestaurant() {
         this.viewModel.chooseRestaurant();
+    }
+
+    @OnClick(R.id.tv_restaurant_details_phone)
+    public void callRestaurant() {
+        String phoneNumber = this.viewModel.getLiveRestaurant().getValue().getInternationalPhoneNumber();
+        if (phoneNumber != null) {
+            Intent callIntent = new Intent(Intent.ACTION_DIAL);
+            callIntent.setData(Uri.parse(String.format(Locale.getDefault(), "tel:%s", phoneNumber)));
+            startActivity(callIntent);
+        } else {
+            Snackbar.make(this.coordinatorLayout, "No number for this restaurant", Snackbar.LENGTH_SHORT).show();
+        }
+    }
+
+    @OnClick(R.id.tv_restaurant_details_like)
+    public void like() {
+        System.out.println("Like bobby!");
+    }
+
+    @OnClick(R.id.tv_restaurant_details_website)
+    public void visitWebsite() {
+        String website = this.viewModel.getLiveRestaurant().getValue().getWebsite();
+        if (website != null) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse(website));
+            startActivity(intent);
+        } else {
+            Snackbar.make(this.coordinatorLayout, "No website for this restaurant", Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     @Override
