@@ -50,7 +50,7 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback {
 
     private static final String TAG = MapFragment.class.getSimpleName();
 
-    private GoogleMap googleMap; // TODO: null passage en landscape
+    private GoogleMap googleMap;
 
     private FusedLocationProviderClient fusedLocationProviderClient;
 
@@ -69,7 +69,6 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback {
         this.fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
         Places.initialize(getContext(), getString(R.string.google_maps_key));
         Places.createClient(getContext());
-        this.viewModel.getRestaurants().observe(this, this::displayRestaurants);
     }
 
     @Override
@@ -117,6 +116,7 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
+        this.viewModel.getRestaurants().observe(this, this::displayRestaurants);
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
         } else {
@@ -151,7 +151,7 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback {
                 if (task.getResult() != null) {
                     LatLng deviceLocation = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
                     this.moveMap(deviceLocation, DEFAULT_ZOOM);
-                    this.viewModel.makeANearbySearchRequest(deviceLocation, String.valueOf(DEFAULT_RADIUS_FOR_RESTAURANT_REQUEST));
+                    this.viewModel.initRestaurantPlaces(deviceLocation, String.valueOf(DEFAULT_RADIUS_FOR_RESTAURANT_REQUEST));
                 } else {
                     Log.d(TAG, "Current location is null. Using defaults.");
                     this.moveMap(this.defaultLocation, DEFAULT_ZOOM);
@@ -165,19 +165,17 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback {
 
     private void displayRestaurants(List<Restaurant> restaurants) {
         for (Restaurant restaurant : restaurants) {
-            this.viewModel.getNumberOfWorkmateAtPlace(restaurant.getPlaceId()).addOnCompleteListener(task -> {
-               if (task.isSuccessful() && task.getResult().size() >= 1 ){
-                   this.googleMap.addMarker(new MarkerOptions()
-                           .position(new LatLng(restaurant.getGeometry().getLocation().getLat(), restaurant.getGeometry().getLocation().getLng()))
-                           .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN))
-                           .title(restaurant.getName()));
-               } else {
-                   this.googleMap.addMarker(new MarkerOptions()
-                           .position(new LatLng(restaurant.getGeometry().getLocation().getLat(), restaurant.getGeometry().getLocation().getLng()))
-                           .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
-                           .title(restaurant.getName()));
-               }
-            });
+            if (restaurant.getAttendance() > 0) {
+                this.googleMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(restaurant.getGeometry().getLocation().getLat(), restaurant.getGeometry().getLocation().getLng()))
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN))
+                        .title(restaurant.getName()));
+            } else {
+                this.googleMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(restaurant.getGeometry().getLocation().getLat(), restaurant.getGeometry().getLocation().getLng()))
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
+                        .title(restaurant.getName()));
+            }
         }
     }
 

@@ -78,7 +78,6 @@ public class RestaurantDetailsActivity extends DaggerAppCompatActivity {
     }
 
     private void updateFab(boolean isSelected) {
-        System.out.println("isSelected = " + isSelected);
         if (isSelected) {
             this.fabRestaurantChoosen.setImageResource(R.drawable.ic_check_circle_black_24dp);
         } else {

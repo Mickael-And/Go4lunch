@@ -1,7 +1,6 @@
 package com.mickael.go4lunch.ui.map.fragment.workmate;
 
 import android.graphics.Color;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,16 +11,18 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.textview.MaterialTextView;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.mickael.go4lunch.R;
-import com.mickael.go4lunch.data.model.Restaurant;
 import com.mickael.go4lunch.data.model.User;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.mickael.go4lunch.ui.restaurantdetails.RestaurantDetailsViewModel.KEY_MAP_RESTAURANT_NAME;
 
 /**
  * {@link RecyclerView.Adapter} that can display a {@link User} and makes a call to the
@@ -29,16 +30,12 @@ import butterknife.ButterKnife;
  */
 public class WorkmatesListAdapter extends RecyclerView.Adapter<WorkmatesListAdapter.WorkmateViewHolder> {
 
-    private static final String TAG = WorkmatesListAdapter.class.getSimpleName();
-
     private List<User> users;
     private final WorkmateFragment.OnItemClickListener clickListener;
-    private final WorkmateFragmentViewModel viewModel;
 
-    WorkmatesListAdapter(WorkmateFragmentViewModel viewModel, List<User> users, WorkmateFragment.OnItemClickListener listener) {
-        this.users = users;
+    WorkmatesListAdapter(WorkmateFragment.OnItemClickListener listener) {
+        this.users = new ArrayList<>();
         this.clickListener = listener;
-        this.viewModel = viewModel;
     }
 
     @NonNull
@@ -55,7 +52,7 @@ public class WorkmatesListAdapter extends RecyclerView.Adapter<WorkmatesListAdap
                 .circleCrop()
                 .into(holder.imgUser);
 
-        if (this.viewModel.isEatingLunchAtNoon(user)) {
+        if (user.getLunchRestaurant() != null) {
             holder.tvLaunchPlaces.setTextColor(Color.BLACK);
             this.updateNoonRestaurantName(user, holder);
         } else {
@@ -75,30 +72,13 @@ public class WorkmatesListAdapter extends RecyclerView.Adapter<WorkmatesListAdap
         notifyDataSetChanged();
     }
 
-
     private void updateNoonRestaurantName(User user, WorkmateViewHolder holder) {
-        this.viewModel.getRestaurant(user.getLunchplaceId()).addOnCompleteListener(task -> {
-            String restaurantName;
-            if (task.isSuccessful()) {
-                DocumentSnapshot documentSnapshot = task.getResult();
-                if (documentSnapshot != null && documentSnapshot.exists()) {
-                    Restaurant restaurant = documentSnapshot.toObject(Restaurant.class);
-                    if (restaurant != null) {
-                        restaurantName = restaurant.getName();
-                    } else {
-                        Log.d(TAG, "Response is null");
-                        restaurantName = "unknown restaurant";
-                    }
-                } else {
-                    restaurantName = "unknown restaurant";
-                    Log.d(TAG, "No such document");
-                }
-            } else {
-                Log.d(TAG, "get failed with ", task.getException());
-                restaurantName = "unknown restaurant";
-            }
-            holder.tvLaunchPlaces.setText(String.format(Locale.getDefault(), "%s is eating at %s", user.getUsername(), restaurantName));
-        });
+        if (user.getLunchRestaurant() != null) {
+            Map<String, String> restaurantField = user.getLunchRestaurant();
+            holder.tvLaunchPlaces.setText(String.format(Locale.getDefault(), "%s is eating at %s", user.getUsername(), restaurantField.get(KEY_MAP_RESTAURANT_NAME)));
+        } else {
+            holder.tvLaunchPlaces.setText(String.format(Locale.getDefault(), "%s is eating at unknown restaurant", user.getUsername()));
+        }
     }
 
     public static class WorkmateViewHolder extends RecyclerView.ViewHolder {

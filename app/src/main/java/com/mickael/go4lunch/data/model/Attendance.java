@@ -1,4 +1,4 @@
-package com.mickael.go4lunch.data.model.placesapi.common;
+package com.mickael.go4lunch.data.model;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,7 +12,8 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class Location {
-    double lat;
-    double lng;
+public class Attendance {
+    String restaurantId;
+
+    int restaurantAttendance;
 }

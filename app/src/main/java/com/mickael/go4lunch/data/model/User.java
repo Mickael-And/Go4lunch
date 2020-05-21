@@ -2,7 +2,7 @@ package com.mickael.go4lunch.data.model;
 
 import androidx.annotation.Nullable;
 
-import java.util.Date;
+import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,7 +18,5 @@ public class User {
     private String username;
     private String urlPicture;
     @Nullable
-    private String lunchplaceId;
-    @Nullable
-    private Date lunchDate;
+    private Map<String, String> lunchRestaurant;
 }

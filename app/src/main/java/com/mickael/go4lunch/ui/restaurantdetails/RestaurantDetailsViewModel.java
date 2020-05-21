@@ -9,14 +9,14 @@ import androidx.lifecycle.ViewModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.mickael.go4lunch.data.dao.RestaurantFirestoreDAO;
+import com.mickael.go4lunch.data.dao.AttendanceFirestoreDAO;
 import com.mickael.go4lunch.data.dao.UserFirestoreDAO;
+import com.mickael.go4lunch.data.model.Attendance;
 import com.mickael.go4lunch.data.model.Restaurant;
 import com.mickael.go4lunch.data.model.User;
 import com.mickael.go4lunch.data.repository.RestaurantRepository;
 import com.mickael.go4lunch.ui.map.fragment.restaurant.RestaurantFragmentViewModel;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -33,6 +33,9 @@ public class RestaurantDetailsViewModel extends ViewModel {
 
     private static final String TAG = RestaurantDetailsViewModel.class.getSimpleName();
 
+    public static final String KEY_MAP_RESTAURANT_ID = "restaurantId";
+    public static final String KEY_MAP_RESTAURANT_NAME = "restaurantName";
+
     private RestaurantRepository restaurantRepository;
 
     @Getter
@@ -45,6 +48,8 @@ public class RestaurantDetailsViewModel extends ViewModel {
 
     @Nullable
     private User currentUser;
+
+    private boolean restaurantStartState;
 
     @Inject
     public RestaurantDetailsViewModel(RestaurantRepository restaurantRepository) {
@@ -79,7 +84,7 @@ public class RestaurantDetailsViewModel extends ViewModel {
                     DocumentSnapshot documentSnapshot = task.getResult();
                     if (documentSnapshot != null && documentSnapshot.exists()) {
                         this.currentUser = documentSnapshot.toObject(User.class);
-                        this.chechIfRestaurantIsSelected();
+                        this.userLunchIsThisRestaurant();
                     } else {
                         Log.d(TAG, "Get user response is null or doesn't exist");
                         this.currentUser = null;
@@ -88,50 +93,31 @@ public class RestaurantDetailsViewModel extends ViewModel {
                     Log.d(TAG, "Error getting documents: ", task.getException());
                     this.currentUser = null;
                 }
-                System.out.println("RestaurantDetailsViewModel.findCurrentUser in task");
-                System.out.println(currentUser);
             });
         }
     }
 
-    private void chechIfRestaurantIsSelected() {
-        if (isCurrentUserLOgged()) {
-            this.liveIsSelected.setValue(this.userLunchIsThisRestaurant());
-        } else {
-            this.liveIsSelected.setValue(false);
-            Log.e(TAG, "User isn't logged");
-        }
-    }
-
-    private Date getReferenceDate() {
-        Date referenceDate = new Date();
-        referenceDate.setHours(14);
-        referenceDate.setMinutes(0);
-        referenceDate.setSeconds(0);
-
-        Date dateNow = new Date();
-
-        if (dateNow.after(referenceDate)) {
-            return referenceDate;
-        } else {
-            referenceDate.setDate(referenceDate.getDate() - 1);
-            return referenceDate;
-        }
-    }
-
-    private boolean userLunchIsThisRestaurant() {
+    private void userLunchIsThisRestaurant() {
         boolean lunchRestaurant;
-        if (this.currentUser != null) {
-            if (this.liveRestaurant.getValue() != null && this.liveRestaurant.getValue().getPlaceId() != null && this.liveRestaurant.getValue().getPlaceId().equals(this.currentUser.getLunchplaceId())) {
-                lunchRestaurant = this.currentUser.getLunchDate() != null && this.currentUser.getLunchDate().after(this.getReferenceDate());
+        if (isCurrentUserLOgged()) {
+            if (this.currentUser != null) {
+                Map<String, String> userLunchRestaurant = this.currentUser.getLunchRestaurant();
+                if (userLunchRestaurant != null) {
+                    String restaurantId = userLunchRestaurant.get(KEY_MAP_RESTAURANT_ID);
+                    lunchRestaurant = restaurantId != null && this.liveRestaurant.getValue().getPlaceId().equals(restaurantId);
+                } else {
+                    lunchRestaurant = false;
+                }
             } else {
+                Log.i(TAG, "No user found");
                 lunchRestaurant = false;
             }
         } else {
-            Log.i(TAG, "No user found");
             lunchRestaurant = false;
+            Log.e(TAG, "User isn't logged");
         }
-        return lunchRestaurant;
+        this.restaurantStartState = lunchRestaurant;
+        this.liveIsSelected.setValue(this.restaurantStartState);
     }
 
     Boolean isCurrentUserLOgged() {
@@ -144,27 +130,7 @@ public class RestaurantDetailsViewModel extends ViewModel {
     }
 
     void chooseRestaurant() {
-        if (isCurrentUserLOgged()) {
-            if (this.liveIsSelected.getValue() != null && this.liveIsSelected.getValue()) {
-                if (this.currentUser != null) {
-                    this.currentUser.setLunchDate(null);
-                    this.currentUser.setLunchplaceId(null);
-                    this.liveIsSelected.setValue(false);
-                } else {
-                    Log.d(TAG, "No user found");
-                }
-            } else {
-                if (this.currentUser != null && this.liveRestaurant.getValue() != null) {
-                    this.currentUser.setLunchDate(new Date());
-                    this.currentUser.setLunchplaceId(this.liveRestaurant.getValue().getPlaceId());
-                    this.liveIsSelected.setValue(true);
-                } else {
-                    Log.d(TAG, "No user found or restaurant is null");
-                }
-            }
-        } else {
-            Log.e(TAG, "User isn't logged");
-        }
+        this.liveIsSelected.setValue(!this.liveIsSelected.getValue());
     }
 
     @Override
@@ -175,22 +141,68 @@ public class RestaurantDetailsViewModel extends ViewModel {
         }
     }
 
+
     public void saveLunch() {
         if (this.liveRestaurant.getValue() != null && this.currentUser != null && this.liveIsSelected.getValue() != null) {
-            if (this.liveIsSelected.getValue()) {
-                RestaurantFirestoreDAO.createRestaurant(this.liveRestaurant.getValue().getVicinity(), this.liveRestaurant.getValue().getInternationalPhoneNumber(), this.liveRestaurant.getValue().getGeometry()
-                        , this.liveRestaurant.getValue().getPhotos(), this.liveRestaurant.getValue().getName(), this.liveRestaurant.getValue().getPlaceId(), this.liveRestaurant.getValue().getRating()
-                        , this.liveRestaurant.getValue().getWebsite(), this.liveRestaurant.getValue().getOpeningHours())
-                        .addOnFailureListener(e -> Log.e(TAG, "Can't create restaurant in firestore database", e));
+            if (this.liveIsSelected.getValue() != this.restaurantStartState) {
+                if (this.liveIsSelected.getValue()) {
+
+                    if (this.currentUser.getLunchRestaurant() != null) {
+                        Map<String, String> lunchRestaurant = this.currentUser.getLunchRestaurant();
+
+                        this.restaurantRepository.updateRepositoryAttendance(false, lunchRestaurant.get(KEY_MAP_RESTAURANT_ID));
+                        this.updateFirestoreAttendance(false, lunchRestaurant.get(KEY_MAP_RESTAURANT_ID));
+                    }
+
+                    this.restaurantRepository.updateRepositoryAttendance(true, this.getLiveRestaurant().getValue().getPlaceId());
+                    this.updateFirestoreAttendance(true, this.getLiveRestaurant().getValue().getPlaceId());
+
+                    Map<String, String> userLunchRestaurant = new HashMap<>();
+                    userLunchRestaurant.put(KEY_MAP_RESTAURANT_ID, this.liveRestaurant.getValue().getPlaceId());
+                    userLunchRestaurant.put(KEY_MAP_RESTAURANT_NAME, this.liveRestaurant.getValue().getName());
+
+                    this.updateUser(userLunchRestaurant);
+
+                } else {
+                    this.restaurantRepository.updateRepositoryAttendance(false, this.getLiveRestaurant().getValue().getPlaceId());
+                    this.updateFirestoreAttendance(false, this.getLiveRestaurant().getValue().getPlaceId());
+
+                    this.updateUser(null);
+                }
             }
-
-            Map<String, Object> userFieldsToUpdate = new HashMap<>();
-            userFieldsToUpdate.put("lunchplaceId", this.currentUser.getLunchplaceId());
-            userFieldsToUpdate.put("lunchDate", this.currentUser.getLunchDate());
-
-            UserFirestoreDAO.updateUser(this.currentUser.getUserId(), userFieldsToUpdate).addOnFailureListener(e -> Log.e(TAG, "Can't update user in firestore database", e));
         } else {
             Log.d(TAG, "Can't save user lunch because there is a null");
         }
+    }
+
+    /**
+     * @param stateUpdate true increase
+     */
+    private void updateFirestoreAttendance(boolean stateUpdate, String restaurantId) {
+        AttendanceFirestoreDAO.getAttendance(restaurantId)
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        int restaurantAttendance = documentSnapshot.toObject(Attendance.class).getRestaurantAttendance();
+                        Map<String, Object> fields = new HashMap<>();
+                        if (stateUpdate) {
+                            fields.put("restaurantAttendance", restaurantAttendance + 1);
+                        } else {
+                            fields.put("restaurantAttendance", restaurantAttendance - 1);
+                        }
+                        AttendanceFirestoreDAO.updateAttendance(restaurantId, fields)
+                                .addOnFailureListener(e -> Log.d(this.getClass().getSimpleName(), "Can't update attendance restaurant in firestore database", e));
+                    } else {
+                        if (stateUpdate) {
+                            AttendanceFirestoreDAO.createAttendance(restaurantId, 1)
+                                    .addOnFailureListener(e -> Log.d(this.getClass().getSimpleName(), "Can't create attendance restaurant in firestore database", e));
+                        }
+                    }
+                });
+    }
+
+    private void updateUser(Map<String, String> userLunchRestaurant) {
+        Map<String, Object> userFieldsToUpdate = new HashMap<>();
+        userFieldsToUpdate.put("lunchRestaurant", userLunchRestaurant);
+        UserFirestoreDAO.updateUser(this.currentUser.getUserId(), userFieldsToUpdate).addOnFailureListener(e -> Log.e(TAG, "Can't update user in firestore database", e));
     }
 }

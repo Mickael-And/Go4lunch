@@ -6,7 +6,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.mickael.go4lunch.data.model.User;
 
-import java.util.Date;
 import java.util.Map;
 
 public class UserFirestoreDAO {
@@ -18,8 +17,8 @@ public class UserFirestoreDAO {
     }
 
     // CREATE
-    public static Task<Void> createUser(String userID, String username, String urlPicture, String lastLunchPlaceId, Date lastLunchDate) {
-        User userToCreate = new User(userID, username, urlPicture, lastLunchPlaceId, lastLunchDate);
+    public static Task<Void> createUser(String userID, String username, String urlPicture, Map<String, String> lunchRestaurant) {
+        User userToCreate = new User(userID, username, urlPicture, lunchRestaurant);
         return UserFirestoreDAO.getUsersCollection().document(userID).set(userToCreate);
     }
 

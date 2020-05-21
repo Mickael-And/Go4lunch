@@ -19,11 +19,8 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.tasks.Task;
-import com.google.android.libraries.places.api.Places;
 import com.google.android.material.textview.MaterialTextView;
 import com.mickael.go4lunch.R;
 import com.mickael.go4lunch.data.model.Restaurant;
@@ -32,6 +29,7 @@ import com.mickael.go4lunch.ui.restaurantdetails.RestaurantDetailsActivity;
 import com.mickael.go4lunch.utils.PermissionUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -62,34 +60,11 @@ public class RestaurantFragment extends DaggerFragment {
 
     private RestaurantListAdapter restaurantsListAdapter;
 
-    private static final String TAG = RestaurantFragment.class.getSimpleName();
-
-    private FusedLocationProviderClient fusedLocationProviderClient;
-
-    private static final int LOCATION_PERMISSION_REQUEST_CODE = 1;
-
-    private static final int DEFAULT_RADIUS_FOR_RESTAURANT_REQUEST = 2000;
-
-    @Nullable
-    private LatLng deviceLocation; // TODO: Mettre dans ViewModel ? Null au passage en paysage et inversement
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.viewModel = new ViewModelProvider(this, this.viewModelFactory).get(RestaurantFragmentViewModel.class);
-        this.fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
-        Places.initialize(getContext(), getString(R.string.google_maps_key));
-        Places.createClient(getContext());
-        this.viewModel.getRestaurants().observe(this, restaurants -> { //TODO: Create method
-            if (restaurants != null && !restaurants.isEmpty()) {
-                this.recyclerView.setVisibility(View.VISIBLE);
-                this.tvErrorMessage.setVisibility(View.INVISIBLE);
-                this.restaurantsListAdapter.updateList(restaurants, this.deviceLocation);
-            } else {
-                this.recyclerView.setVisibility(View.INVISIBLE);
-                this.tvErrorMessage.setVisibility(View.VISIBLE);
-            }
-        });
+        this.viewModel.getRestaurants().observe(this, this::manageRestaurantList);
     }
 
     @Override
@@ -112,43 +87,15 @@ public class RestaurantFragment extends DaggerFragment {
         this.recyclerView.setAdapter(this.restaurantsListAdapter);
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
+    private void manageRestaurantList(List<Restaurant> restaurants) {
+        if (restaurants != null && !restaurants.isEmpty()) {
+            this.recyclerView.setVisibility(View.VISIBLE);
+            this.tvErrorMessage.setVisibility(View.INVISIBLE);
+            this.restaurantsListAdapter.updateList(restaurants);
         } else {
-            this.findRestaurants();
+            this.recyclerView.setVisibility(View.INVISIBLE);
+            this.tvErrorMessage.setVisibility(View.VISIBLE);
         }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            if (PermissionUtils.isPermissionGranted(permissions, grantResults, Manifest.permission.ACCESS_FINE_LOCATION)) {
-                this.findRestaurants();
-            } else {
-                Toast.makeText(getContext(), "Missing permissions to found restaurants", Toast.LENGTH_SHORT).show();
-                this.recyclerView.setVisibility(View.INVISIBLE);
-                this.tvErrorMessage.setVisibility(View.VISIBLE);
-            }
-        }
-    }
-
-    private void findRestaurants() {
-        Task<Location> locationResult = this.fusedLocationProviderClient.getLastLocation();
-        locationResult.addOnCompleteListener(getActivity(), task -> {
-            if (task.isSuccessful()) {
-                if (task.getResult() != null) {
-                    this.deviceLocation = new LatLng(task.getResult().getLatitude(), task.getResult().getLongitude());
-                    this.viewModel.makeANearbySearchRequest(this.deviceLocation, String.valueOf(DEFAULT_RADIUS_FOR_RESTAURANT_REQUEST));
-                } else {
-                    Log.d(TAG, "Current location is null");
-                }
-            } else {
-                Log.d(TAG, "Exception: %s", task.getException());
-            }
-        });
     }
 
     public interface OnItemClickListener {

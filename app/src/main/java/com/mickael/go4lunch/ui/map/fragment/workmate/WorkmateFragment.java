@@ -17,8 +17,9 @@ import com.mickael.go4lunch.R;
 import com.mickael.go4lunch.data.model.User;
 import com.mickael.go4lunch.di.ViewModelFactory;
 import com.mickael.go4lunch.ui.restaurantdetails.RestaurantDetailsActivity;
+import com.mickael.go4lunch.ui.restaurantdetails.RestaurantDetailsViewModel;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -53,16 +54,7 @@ public class WorkmateFragment extends DaggerFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.viewModel = new ViewModelProvider(this, this.viewModelFactory).get(WorkmateFragmentViewModel.class);
-        this.viewModel.getUsers().observe(this, users -> {
-            if (users != null && !users.isEmpty()) {
-                this.recyclerView.setVisibility(View.VISIBLE);
-                this.tvErrorMessage.setVisibility(View.INVISIBLE);
-                this.workmatesListAdapter.updateList(users);
-            } else {
-                this.recyclerView.setVisibility(View.INVISIBLE);
-                this.tvErrorMessage.setVisibility(View.VISIBLE);
-            }
-        });
+        this.viewModel.getUsers().observe(this, this::manageUsersListe);
     }
 
     @Override
@@ -75,16 +67,27 @@ public class WorkmateFragment extends DaggerFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        this.workmatesListAdapter = new WorkmatesListAdapter(this.viewModel, new ArrayList<>(), user -> {
-            if (this.viewModel.isEatingLunchAtNoon(user)) {
+        this.workmatesListAdapter = new WorkmatesListAdapter(user -> {
+            if (user.getLunchRestaurant() != null) {
                 Intent intent = new Intent(getActivity(), RestaurantDetailsActivity.class);
-                intent.putExtra(EXTRAS_RESTAURANT_ID, user.getLunchplaceId());
+                intent.putExtra(EXTRAS_RESTAURANT_ID, user.getLunchRestaurant().get(RestaurantDetailsViewModel.KEY_MAP_RESTAURANT_ID));
                 startActivity(intent);
             }
         });
         DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(this.recyclerView.getContext(), LinearLayoutManager.VERTICAL);
         this.recyclerView.addItemDecoration(dividerItemDecoration);
         this.recyclerView.setAdapter(this.workmatesListAdapter);
+    }
+
+    private void manageUsersListe(List<User> users) {
+        if (users != null && !users.isEmpty()) {
+            this.recyclerView.setVisibility(View.VISIBLE);
+            this.tvErrorMessage.setVisibility(View.INVISIBLE);
+            this.workmatesListAdapter.updateList(users);
+        } else {
+            this.recyclerView.setVisibility(View.INVISIBLE);
+            this.tvErrorMessage.setVisibility(View.VISIBLE);
+        }
     }
 
     public interface OnItemClickListener {

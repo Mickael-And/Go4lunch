@@ -6,6 +6,7 @@ import com.mickael.go4lunch.data.model.placesapi.common.Geometry;
 import com.mickael.go4lunch.data.model.placesapi.common.OpeningHours;
 import com.mickael.go4lunch.data.model.placesapi.common.Photo;
 
+import java.util.Date;
 import java.util.List;
 
 import lombok.AccessLevel;
@@ -46,5 +47,7 @@ public class Restaurant {
     @Expose
     OpeningHours openingHours;
 
+    int attendance;
 
+    String distanceToDeviceLocation;
 }
