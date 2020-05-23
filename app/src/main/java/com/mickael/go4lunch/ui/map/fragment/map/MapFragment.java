@@ -1,6 +1,7 @@
 package com.mickael.go4lunch.ui.map.fragment.map;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import com.google.android.libraries.places.api.Places;
 import com.mickael.go4lunch.R;
 import com.mickael.go4lunch.data.model.Restaurant;
 import com.mickael.go4lunch.di.ViewModelFactory;
+import com.mickael.go4lunch.ui.restaurantdetails.RestaurantDetailsActivity;
 import com.mickael.go4lunch.utils.PermissionUtils;
 
 import java.util.List;
@@ -38,6 +40,8 @@ import javax.inject.Inject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.support.DaggerFragment;
+
+import static com.mickael.go4lunch.ui.map.fragment.restaurant.RestaurantFragment.EXTRAS_RESTAURANT_ID;
 
 public class MapFragment extends DaggerFragment implements OnMapReadyCallback {
     @BindView(R.id.map)
@@ -123,6 +127,13 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback {
             this.enableMyLocation();
             this.updateMapOnLocationDevice();
         }
+
+        this.googleMap.setOnMarkerClickListener(marker -> {
+            Intent intent = new Intent(getActivity(), RestaurantDetailsActivity.class);
+            intent.putExtra(EXTRAS_RESTAURANT_ID, marker.getTitle());
+            startActivity(intent);
+            return true;
+        });
     }
 
     @Override
@@ -169,12 +180,12 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback {
                 this.googleMap.addMarker(new MarkerOptions()
                         .position(new LatLng(restaurant.getGeometry().getLocation().getLat(), restaurant.getGeometry().getLocation().getLng()))
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN))
-                        .title(restaurant.getName()));
+                        .title(restaurant.getPlaceId()));
             } else {
                 this.googleMap.addMarker(new MarkerOptions()
                         .position(new LatLng(restaurant.getGeometry().getLocation().getLat(), restaurant.getGeometry().getLocation().getLng()))
                         .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ORANGE))
-                        .title(restaurant.getName()));
+                        .title(restaurant.getPlaceId()));
             }
         }
     }
