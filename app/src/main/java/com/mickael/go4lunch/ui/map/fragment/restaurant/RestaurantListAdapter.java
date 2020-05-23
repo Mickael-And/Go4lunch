@@ -33,7 +33,7 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
     private List<Restaurant> restaurants;
     private final OnItemClickListener clickListener;
 
-    public RestaurantListAdapter(RestaurantFragmentViewModel viewModel, List<Restaurant> restaurants, OnItemClickListener listener) {
+    public RestaurantListAdapter(List<Restaurant> restaurants, OnItemClickListener listener) {
         this.restaurants = restaurants;
         this.clickListener = listener;
     }

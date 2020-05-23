@@ -10,6 +10,8 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.mickael.go4lunch.data.dao.UserFirestoreDAO;
 
+import java.util.ArrayList;
+
 import javax.inject.Inject;
 
 public class MainActivityViewModel extends ViewModel {
@@ -18,7 +20,6 @@ public class MainActivityViewModel extends ViewModel {
 
     @Inject
     public MainActivityViewModel() {
-
     }
 
     @Nullable
@@ -29,7 +30,6 @@ public class MainActivityViewModel extends ViewModel {
     Boolean isCurrentUserLOgged() {
         return (this.getCurrentUser() != null);
     }
-
 
     void createUserIfNeeded() {
         if (this.isCurrentUserLOgged()) {
@@ -43,7 +43,7 @@ public class MainActivityViewModel extends ViewModel {
                         String userId = firebaseUser.getUid();
                         String username = firebaseUser.getDisplayName();
                         String urlPicture = firebaseUser.getPhotoUrl() != null ? FirebaseAuth.getInstance().getCurrentUser().getPhotoUrl().toString() : null;
-                        UserFirestoreDAO.createUser(userId, username, urlPicture, null).addOnFailureListener(e -> Log.e(TAG, "Can't create user in firestore database", e));
+                        UserFirestoreDAO.createUser(userId, username, urlPicture, null, new ArrayList<>()).addOnFailureListener(e -> Log.e(TAG, "Can't create user in firestore database", e));
                     }
                 } else {
                     Log.e(TAG, "Can't check if connected user exist in firestore database");

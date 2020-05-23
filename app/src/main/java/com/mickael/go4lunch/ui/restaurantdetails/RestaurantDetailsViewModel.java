@@ -2,19 +2,15 @@ package com.mickael.go4lunch.ui.restaurantdetails;
 
 import android.util.Log;
 
-import androidx.annotation.Nullable;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentSnapshot;
-import com.mickael.go4lunch.data.dao.AttendanceFirestoreDAO;
 import com.mickael.go4lunch.data.dao.UserFirestoreDAO;
-import com.mickael.go4lunch.data.model.Attendance;
 import com.mickael.go4lunch.data.model.Restaurant;
 import com.mickael.go4lunch.data.model.User;
-import com.mickael.go4lunch.data.repository.RestaurantRepository;
+import com.mickael.go4lunch.data.repository.AppRepository;
 import com.mickael.go4lunch.ui.map.fragment.restaurant.RestaurantFragmentViewModel;
 
 import java.util.HashMap;
@@ -36,35 +32,30 @@ public class RestaurantDetailsViewModel extends ViewModel {
     public static final String KEY_MAP_RESTAURANT_ID = "restaurantId";
     public static final String KEY_MAP_RESTAURANT_NAME = "restaurantName";
 
-    private RestaurantRepository restaurantRepository;
+    private AppRepository appRepository;
 
     @Getter
-    private MutableLiveData<Restaurant> liveRestaurant;
+    private MutableLiveData<Restaurant> selectedRestaurant;
 
     @Getter
-    private MutableLiveData<Boolean> liveIsSelected;
+    private MutableLiveData<User> currentUser;
 
     private Disposable disposable;
 
-    @Nullable
-    private User currentUser;
-
-    private boolean restaurantStartState;
-
     @Inject
-    public RestaurantDetailsViewModel(RestaurantRepository restaurantRepository) {
-        this.restaurantRepository = restaurantRepository;
-        this.liveRestaurant = new MutableLiveData<>();
-        this.liveIsSelected = new MutableLiveData<>();
+    public RestaurantDetailsViewModel(AppRepository appRepository) {
+        this.appRepository = appRepository;
+        this.selectedRestaurant = new MutableLiveData<>();
+        this.currentUser = new MutableLiveData<>();
     }
 
-    void getSelectedRestaurant(String placeId) {
-        this.disposable = this.restaurantRepository.getRestaurantDetails(placeId)
+    void initView(String restaurantId) {
+        this.disposable = this.appRepository.getRestaurantDetails(restaurantId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(restaurantDetailsApiResponse -> {
-                    this.liveRestaurant.setValue(restaurantDetailsApiResponse.getRestaurant());
-                    this.findCurrentUser();
+                    this.selectedRestaurant.setValue(restaurantDetailsApiResponse.getRestaurant());
+                    this.getUser();
                 }, throwable -> {
                     // cast to retrofit.HttpException to get the response code
                     if (throwable instanceof HttpException) {
@@ -77,60 +68,42 @@ public class RestaurantDetailsViewModel extends ViewModel {
                 });
     }
 
-    private void findCurrentUser() {
+    private void getUser() {
         if (this.isCurrentUserLOgged()) {
-            UserFirestoreDAO.getUser(this.getCurrentUser().getUid()).addOnCompleteListener(task -> {
+            UserFirestoreDAO.getUser(FirebaseAuth.getInstance().getCurrentUser().getUid()).addOnCompleteListener(task -> {
                 if (task.isSuccessful()) {
                     DocumentSnapshot documentSnapshot = task.getResult();
                     if (documentSnapshot != null && documentSnapshot.exists()) {
-                        this.currentUser = documentSnapshot.toObject(User.class);
-                        this.userLunchIsThisRestaurant();
+                        this.currentUser.setValue(documentSnapshot.toObject(User.class));
                     } else {
                         Log.d(TAG, "Get user response is null or doesn't exist");
-                        this.currentUser = null;
                     }
                 } else {
                     Log.d(TAG, "Error getting documents: ", task.getException());
-                    this.currentUser = null;
                 }
             });
         }
     }
 
-    private void userLunchIsThisRestaurant() {
-        boolean lunchRestaurant;
-        if (isCurrentUserLOgged()) {
-            if (this.currentUser != null) {
-                Map<String, String> userLunchRestaurant = this.currentUser.getLunchRestaurant();
-                if (userLunchRestaurant != null) {
-                    String restaurantId = userLunchRestaurant.get(KEY_MAP_RESTAURANT_ID);
-                    lunchRestaurant = restaurantId != null && this.liveRestaurant.getValue().getPlaceId().equals(restaurantId);
-                } else {
-                    lunchRestaurant = false;
-                }
-            } else {
-                Log.i(TAG, "No user found");
-                lunchRestaurant = false;
-            }
-        } else {
-            lunchRestaurant = false;
-            Log.e(TAG, "User isn't logged");
-        }
-        this.restaurantStartState = lunchRestaurant;
-        this.liveIsSelected.setValue(this.restaurantStartState);
-    }
-
     Boolean isCurrentUserLOgged() {
-        return (this.getCurrentUser() != null);
-    }
-
-    @Nullable
-    private FirebaseUser getCurrentUser() {
-        return FirebaseAuth.getInstance().getCurrentUser();
+        return (FirebaseAuth.getInstance().getCurrentUser() != null);
     }
 
     void chooseRestaurant() {
-        this.liveIsSelected.setValue(!this.liveIsSelected.getValue());
+        User currentUser = this.currentUser.getValue();
+        Restaurant selectedRestaurant = this.selectedRestaurant.getValue();
+        if (currentUser != null && selectedRestaurant != null) {
+            if (currentUser.getLunchRestaurant() != null && currentUser.getLunchRestaurant().get(KEY_MAP_RESTAURANT_ID).equals(selectedRestaurant.getPlaceId())) {
+                currentUser.setLunchRestaurant(null);
+                this.currentUser.setValue(currentUser);
+            } else {
+                Map<String, String> userLunchRestaurant = new HashMap<>();
+                userLunchRestaurant.put(KEY_MAP_RESTAURANT_ID, selectedRestaurant.getPlaceId());
+                userLunchRestaurant.put(KEY_MAP_RESTAURANT_NAME, selectedRestaurant.getName());
+                currentUser.setLunchRestaurant(userLunchRestaurant);
+                this.currentUser.setValue(currentUser);
+            }
+        }
     }
 
     @Override
@@ -141,68 +114,34 @@ public class RestaurantDetailsViewModel extends ViewModel {
         }
     }
 
-
-    public void saveLunch() {
-        if (this.liveRestaurant.getValue() != null && this.currentUser != null && this.liveIsSelected.getValue() != null) {
-            if (this.liveIsSelected.getValue() != this.restaurantStartState) {
-                if (this.liveIsSelected.getValue()) {
-
-                    if (this.currentUser.getLunchRestaurant() != null) {
-                        Map<String, String> lunchRestaurant = this.currentUser.getLunchRestaurant();
-
-                        this.restaurantRepository.updateRepositoryAttendance(false, lunchRestaurant.get(KEY_MAP_RESTAURANT_ID));
-                        this.updateFirestoreAttendance(false, lunchRestaurant.get(KEY_MAP_RESTAURANT_ID));
-                    }
-
-                    this.restaurantRepository.updateRepositoryAttendance(true, this.getLiveRestaurant().getValue().getPlaceId());
-                    this.updateFirestoreAttendance(true, this.getLiveRestaurant().getValue().getPlaceId());
-
-                    Map<String, String> userLunchRestaurant = new HashMap<>();
-                    userLunchRestaurant.put(KEY_MAP_RESTAURANT_ID, this.liveRestaurant.getValue().getPlaceId());
-                    userLunchRestaurant.put(KEY_MAP_RESTAURANT_NAME, this.liveRestaurant.getValue().getName());
-
-                    this.updateUser(userLunchRestaurant);
-
-                } else {
-                    this.restaurantRepository.updateRepositoryAttendance(false, this.getLiveRestaurant().getValue().getPlaceId());
-                    this.updateFirestoreAttendance(false, this.getLiveRestaurant().getValue().getPlaceId());
-
-                    this.updateUser(null);
-                }
-            }
-        } else {
-            Log.d(TAG, "Can't save user lunch because there is a null");
+    void saveUserModification() {
+        User currentUser = this.currentUser.getValue();
+        if (currentUser != null) {
+            Map<String, Object> userFieldsToUpdate = new HashMap<>();
+            userFieldsToUpdate.put("lunchRestaurant", currentUser.getLunchRestaurant());
+            userFieldsToUpdate.put("likes", currentUser.getLikes());
+            UserFirestoreDAO.updateUser(currentUser.getUserId(), userFieldsToUpdate).addOnFailureListener(e -> Log.e(TAG, "Can't update user in firestore database", e));
         }
     }
 
-    /**
-     * @param stateUpdate true increase
-     */
-    private void updateFirestoreAttendance(boolean stateUpdate, String restaurantId) {
-        AttendanceFirestoreDAO.getAttendance(restaurantId)
-                .addOnSuccessListener(documentSnapshot -> {
-                    if (documentSnapshot.exists()) {
-                        int restaurantAttendance = documentSnapshot.toObject(Attendance.class).getRestaurantAttendance();
-                        Map<String, Object> fields = new HashMap<>();
-                        if (stateUpdate) {
-                            fields.put("restaurantAttendance", restaurantAttendance + 1);
-                        } else {
-                            fields.put("restaurantAttendance", restaurantAttendance - 1);
-                        }
-                        AttendanceFirestoreDAO.updateAttendance(restaurantId, fields)
-                                .addOnFailureListener(e -> Log.d(this.getClass().getSimpleName(), "Can't update attendance restaurant in firestore database", e));
-                    } else {
-                        if (stateUpdate) {
-                            AttendanceFirestoreDAO.createAttendance(restaurantId, 1)
-                                    .addOnFailureListener(e -> Log.d(this.getClass().getSimpleName(), "Can't create attendance restaurant in firestore database", e));
-                        }
-                    }
-                });
-    }
+    boolean likeRestaurant() throws Exception {
+        boolean isLike;
+        User currentUser = this.currentUser.getValue();
+        Restaurant selectedRestaurant = this.selectedRestaurant.getValue();
 
-    private void updateUser(Map<String, String> userLunchRestaurant) {
-        Map<String, Object> userFieldsToUpdate = new HashMap<>();
-        userFieldsToUpdate.put("lunchRestaurant", userLunchRestaurant);
-        UserFirestoreDAO.updateUser(this.currentUser.getUserId(), userFieldsToUpdate).addOnFailureListener(e -> Log.e(TAG, "Can't update user in firestore database", e));
+        if (currentUser != null && selectedRestaurant != null) {
+            String selectedRestaurantId = selectedRestaurant.getPlaceId();
+            if (currentUser.getLikes().contains(selectedRestaurantId)) {
+                currentUser.getLikes().remove(selectedRestaurantId);
+                isLike = false;
+            } else {
+                currentUser.getLikes().add(selectedRestaurantId);
+                isLike = true;
+            }
+            this.currentUser.setValue(currentUser);
+        } else {
+            throw new Exception();
+        }
+        return isLike;
     }
 }

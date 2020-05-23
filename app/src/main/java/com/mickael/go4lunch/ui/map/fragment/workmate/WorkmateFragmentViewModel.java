@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.mickael.go4lunch.data.model.User;
-import com.mickael.go4lunch.data.repository.UserRepository;
+import com.mickael.go4lunch.data.repository.AppRepository;
 
 import java.util.List;
 
@@ -18,7 +18,7 @@ public class WorkmateFragmentViewModel extends ViewModel {
     private MutableLiveData<List<User>> users;
 
     @Inject
-    public WorkmateFragmentViewModel(UserRepository userRepository) {
-        this.users = userRepository.getUsers();
+    public WorkmateFragmentViewModel(AppRepository appRepository) {
+        this.users = appRepository.getUsers();
     }
 }

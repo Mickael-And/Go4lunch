@@ -16,6 +16,7 @@ import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textview.MaterialTextView;
 import com.mickael.go4lunch.R;
 import com.mickael.go4lunch.data.model.Restaurant;
+import com.mickael.go4lunch.data.model.User;
 import com.mickael.go4lunch.di.ViewModelFactory;
 import com.mickael.go4lunch.ui.main.MainActivity;
 import com.mickael.go4lunch.ui.map.fragment.restaurant.RestaurantFragment;
@@ -29,9 +30,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dagger.android.support.DaggerAppCompatActivity;
 
-public class RestaurantDetailsActivity extends DaggerAppCompatActivity {
-    private static final int CALL_PHONE_PERMISSION_REQUEST_CODE = 2;
+import static com.mickael.go4lunch.ui.restaurantdetails.RestaurantDetailsViewModel.KEY_MAP_RESTAURANT_ID;
 
+public class RestaurantDetailsActivity extends DaggerAppCompatActivity {
     @BindView(R.id.restaurant_details_coordinatorlayout)
     CoordinatorLayout coordinatorLayout;
     @BindView(R.id.appbar_picture)
@@ -44,6 +45,9 @@ public class RestaurantDetailsActivity extends DaggerAppCompatActivity {
     MaterialTextView restaurantAddress;
     @BindView(R.id.fab_choose_restaurant)
     FloatingActionButton fabRestaurantChoosen;
+
+    @BindView(R.id.tv_restaurant_details_like)
+    MaterialTextView tvLike;
 
     @Inject
     ViewModelFactory viewModelFactory;
@@ -58,10 +62,28 @@ public class RestaurantDetailsActivity extends DaggerAppCompatActivity {
         this.viewModel = new ViewModelProvider(this, viewModelFactory).get(RestaurantDetailsViewModel.class);
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            this.viewModel.getSelectedRestaurant(extras.getString(RestaurantFragment.EXTRAS_RESTAURANT_ID));
+            this.viewModel.initView(extras.getString(RestaurantFragment.EXTRAS_RESTAURANT_ID));
         }
-        this.viewModel.getLiveRestaurant().observe(this, this::updateComponentsValues);
-        this.viewModel.getLiveIsSelected().observe(this, this::updateFab);
+        this.viewModel.getSelectedRestaurant().observe(this, this::updateRestaurantComponents);
+        this.viewModel.getCurrentUser().observe(this, this::updateUserComponents);
+    }
+
+    private void updateUserComponents(User user) {
+        if (user.getLunchRestaurant() != null && user.getLunchRestaurant().get(KEY_MAP_RESTAURANT_ID).equals(this.viewModel.getSelectedRestaurant().getValue().getPlaceId())) {
+            this.fabRestaurantChoosen.setImageResource(R.drawable.ic_check_circle_black_24dp);
+        } else {
+            this.fabRestaurantChoosen.setImageResource(R.drawable.ic_radio_button_unchecked_black_24dp);
+        }
+
+        if (user.getLikes().size() > 0) {
+            if (user.getLikes().contains(this.viewModel.getSelectedRestaurant().getValue().getPlaceId())) {
+                this.tvLike.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_star_orange_24dp, 0, 0);
+            } else {
+                this.tvLike.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_star_border_orange_24dp, 0, 0);
+            }
+        } else {
+            this.tvLike.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_star_border_orange_24dp, 0, 0);
+        }
     }
 
     @Override
@@ -74,21 +96,12 @@ public class RestaurantDetailsActivity extends DaggerAppCompatActivity {
         }
     }
 
-
-    private void updateComponentsValues(Restaurant restaurant) {
+    private void updateRestaurantComponents(Restaurant restaurant) {
         if (restaurant != null) {
             this.updateHeaderPhoto(restaurant);
             this.restaurantName.setText(restaurant.getName());
             this.restaurantRating.setRating(this.updateRestaurantRating(restaurant.getRating()));
             this.restaurantAddress.setText(restaurant.getVicinity());
-        }
-    }
-
-    private void updateFab(boolean isSelected) {
-        if (isSelected) {
-            this.fabRestaurantChoosen.setImageResource(R.drawable.ic_check_circle_black_24dp);
-        } else {
-            this.fabRestaurantChoosen.setImageResource(R.drawable.ic_radio_button_unchecked_black_24dp);
         }
     }
 
@@ -110,7 +123,6 @@ public class RestaurantDetailsActivity extends DaggerAppCompatActivity {
         }
     }
 
-
     @OnClick(R.id.fab_choose_restaurant)
     public void chooseRestaurant() {
         this.viewModel.chooseRestaurant();
@@ -118,7 +130,7 @@ public class RestaurantDetailsActivity extends DaggerAppCompatActivity {
 
     @OnClick(R.id.tv_restaurant_details_phone)
     public void callRestaurant() {
-        String phoneNumber = this.viewModel.getLiveRestaurant().getValue().getInternationalPhoneNumber();
+        String phoneNumber = this.viewModel.getSelectedRestaurant().getValue().getInternationalPhoneNumber();
         if (phoneNumber != null) {
             Intent callIntent = new Intent(Intent.ACTION_DIAL);
             callIntent.setData(Uri.parse(String.format(Locale.getDefault(), "tel:%s", phoneNumber)));
@@ -130,12 +142,20 @@ public class RestaurantDetailsActivity extends DaggerAppCompatActivity {
 
     @OnClick(R.id.tv_restaurant_details_like)
     public void like() {
-        System.out.println("Like bobby!");
+        try {
+            if (this.viewModel.likeRestaurant()) {
+                Snackbar.make(this.coordinatorLayout, "You like this restaurant", Snackbar.LENGTH_SHORT).show();
+            } else {
+                Snackbar.make(this.coordinatorLayout, "You don't like this restaurant anymore", Snackbar.LENGTH_SHORT).show();
+            }
+        } catch (Exception e) {
+            Snackbar.make(this.coordinatorLayout, "Error to update", Snackbar.LENGTH_SHORT).show();
+        }
     }
 
     @OnClick(R.id.tv_restaurant_details_website)
     public void visitWebsite() {
-        String website = this.viewModel.getLiveRestaurant().getValue().getWebsite();
+        String website = this.viewModel.getSelectedRestaurant().getValue().getWebsite();
         if (website != null) {
             Intent intent = new Intent(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(website));
@@ -148,6 +168,6 @@ public class RestaurantDetailsActivity extends DaggerAppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        this.viewModel.saveLunch();
+        this.viewModel.saveUserModification();
     }
 }

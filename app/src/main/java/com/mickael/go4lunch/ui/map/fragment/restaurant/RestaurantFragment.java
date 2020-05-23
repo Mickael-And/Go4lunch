@@ -1,32 +1,22 @@
 package com.mickael.go4lunch.ui.map.fragment.restaurant;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.location.Location;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.core.app.ActivityCompat;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.textview.MaterialTextView;
 import com.mickael.go4lunch.R;
 import com.mickael.go4lunch.data.model.Restaurant;
 import com.mickael.go4lunch.di.ViewModelFactory;
 import com.mickael.go4lunch.ui.restaurantdetails.RestaurantDetailsActivity;
-import com.mickael.go4lunch.utils.PermissionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,15 +46,13 @@ public class RestaurantFragment extends DaggerFragment {
     @Inject
     ViewModelFactory viewModelFactory;
 
-    private RestaurantFragmentViewModel viewModel;
-
     private RestaurantListAdapter restaurantsListAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.viewModel = new ViewModelProvider(this, this.viewModelFactory).get(RestaurantFragmentViewModel.class);
-        this.viewModel.getRestaurants().observe(this, this::manageRestaurantList);
+        RestaurantFragmentViewModel viewModel = new ViewModelProvider(this, this.viewModelFactory).get(RestaurantFragmentViewModel.class);
+        viewModel.getRestaurants().observe(this, this::manageRestaurantList);
     }
 
     @Override
@@ -77,7 +65,7 @@ public class RestaurantFragment extends DaggerFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        this.restaurantsListAdapter = new RestaurantListAdapter(this.viewModel, new ArrayList<>(), restaurant -> {
+        this.restaurantsListAdapter = new RestaurantListAdapter(new ArrayList<>(), restaurant -> {
             Intent intent = new Intent(getActivity(), RestaurantDetailsActivity.class);
             intent.putExtra(EXTRAS_RESTAURANT_ID, restaurant.getPlaceId());
             startActivity(intent);

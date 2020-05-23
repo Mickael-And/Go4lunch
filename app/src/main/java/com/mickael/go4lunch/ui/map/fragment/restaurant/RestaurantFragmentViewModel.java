@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.mickael.go4lunch.data.model.Restaurant;
-import com.mickael.go4lunch.data.repository.RestaurantRepository;
+import com.mickael.go4lunch.data.repository.AppRepository;
 
 import java.util.List;
 
@@ -18,8 +18,8 @@ public class RestaurantFragmentViewModel extends ViewModel {
     private MutableLiveData<List<Restaurant>> restaurants;
 
     @Inject
-    public RestaurantFragmentViewModel(RestaurantRepository pRestaurantRepository) {
-        this.restaurants = pRestaurantRepository.getRestaurants();
+    public RestaurantFragmentViewModel(AppRepository pAppRepository) {
+        this.restaurants = pAppRepository.getRestaurants();
     }
 
 }

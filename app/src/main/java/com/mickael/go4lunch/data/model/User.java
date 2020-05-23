@@ -2,6 +2,7 @@ package com.mickael.go4lunch.data.model;
 
 import androidx.annotation.Nullable;
 
+import java.util.List;
 import java.util.Map;
 
 import lombok.AllArgsConstructor;
@@ -19,4 +20,5 @@ public class User {
     private String urlPicture;
     @Nullable
     private Map<String, String> lunchRestaurant;
+    private List<String> likes;
 }
