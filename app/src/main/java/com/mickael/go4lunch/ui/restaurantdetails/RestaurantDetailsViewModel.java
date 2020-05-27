@@ -2,6 +2,7 @@ package com.mickael.go4lunch.ui.restaurantdetails;
 
 import android.util.Log;
 
+import androidx.lifecycle.MediatorLiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
@@ -13,7 +14,9 @@ import com.mickael.go4lunch.data.model.User;
 import com.mickael.go4lunch.data.repository.AppRepository;
 import com.mickael.go4lunch.ui.map.fragment.restaurant.RestaurantFragmentViewModel;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -40,6 +43,9 @@ public class RestaurantDetailsViewModel extends ViewModel {
     @Getter
     private MutableLiveData<User> currentUser;
 
+    @Getter
+    private MediatorLiveData<List<User>> users;
+
     private Disposable disposable;
 
     @Inject
@@ -47,6 +53,7 @@ public class RestaurantDetailsViewModel extends ViewModel {
         this.appRepository = appRepository;
         this.selectedRestaurant = new MutableLiveData<>();
         this.currentUser = new MutableLiveData<>();
+        this.users = new MediatorLiveData<>();
     }
 
     void initView(String restaurantId) {
@@ -75,6 +82,7 @@ public class RestaurantDetailsViewModel extends ViewModel {
                     DocumentSnapshot documentSnapshot = task.getResult();
                     if (documentSnapshot != null && documentSnapshot.exists()) {
                         this.currentUser.setValue(documentSnapshot.toObject(User.class));
+                        this.getUsersByRestaurant();
                     } else {
                         Log.d(TAG, "Get user response is null or doesn't exist");
                     }
@@ -83,6 +91,24 @@ public class RestaurantDetailsViewModel extends ViewModel {
                 }
             });
         }
+    }
+
+    private void getUsersByRestaurant() {
+        Restaurant restaurant = this.getSelectedRestaurant().getValue();
+        User currentUser = this.getCurrentUser().getValue();
+
+        users.addSource(this.appRepository.getUsers(), users1 -> {
+            if (restaurant != null && currentUser != null) {
+                List<User> userAtNoon = new ArrayList<>();
+                for (User user : users1) {
+                    if (user.getLunchRestaurant() != null && user.getLunchRestaurant().get(KEY_MAP_RESTAURANT_ID).equals(restaurant.getPlaceId())
+                            && !user.getUserId().equals(currentUser.getUserId())) {
+                        userAtNoon.add(user);
+                    }
+                }
+                this.users.setValue(userAtNoon);
+            }
+        });
     }
 
     Boolean isCurrentUserLOgged() {

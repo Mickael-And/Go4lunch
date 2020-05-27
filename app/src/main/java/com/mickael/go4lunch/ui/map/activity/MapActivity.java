@@ -70,12 +70,13 @@ public class MapActivity extends DaggerAppCompatActivity {
         this.configureNavigationView();
         this.configureBottomNavigation();
         this.updateUserInformation();
+        this.viewModel.initUsers();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        if (!this.viewModel.isCurrentUserLOgged()){
+        if (!this.viewModel.isCurrentUserLOgged()) {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
             finish();

@@ -9,6 +9,7 @@ import android.widget.RatingBar;
 import androidx.annotation.Nullable;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -21,6 +22,7 @@ import com.mickael.go4lunch.di.ViewModelFactory;
 import com.mickael.go4lunch.ui.main.MainActivity;
 import com.mickael.go4lunch.ui.map.fragment.restaurant.RestaurantFragment;
 
+import java.util.List;
 import java.util.Locale;
 
 import javax.inject.Inject;
@@ -45,6 +47,8 @@ public class RestaurantDetailsActivity extends DaggerAppCompatActivity {
     MaterialTextView restaurantAddress;
     @BindView(R.id.fab_choose_restaurant)
     FloatingActionButton fabRestaurantChoosen;
+    @BindView(R.id.list_workmates_by_restaurant)
+    RecyclerView workmatesList;
 
     @BindView(R.id.tv_restaurant_details_like)
     MaterialTextView tvLike;
@@ -53,6 +57,8 @@ public class RestaurantDetailsActivity extends DaggerAppCompatActivity {
     ViewModelFactory viewModelFactory;
 
     private RestaurantDetailsViewModel viewModel;
+
+    private WorkmatesDetailsAdapter adapter;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -66,6 +72,13 @@ public class RestaurantDetailsActivity extends DaggerAppCompatActivity {
         }
         this.viewModel.getSelectedRestaurant().observe(this, this::updateRestaurantComponents);
         this.viewModel.getCurrentUser().observe(this, this::updateUserComponents);
+        this.adapter = new WorkmatesDetailsAdapter();
+        this.workmatesList.setAdapter(this.adapter);
+        this.viewModel.getUsers().observe(this, this::updateUserList);
+    }
+
+    private void updateUserList(List<User> users) {
+        this.adapter.updateList(users);
     }
 
     private void updateUserComponents(User user) {

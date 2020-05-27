@@ -175,6 +175,8 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback {
     }
 
     private void displayRestaurants(List<Restaurant> restaurants) {
+        this.googleMap.clear();
+
         for (Restaurant restaurant : restaurants) {
             if (restaurant.getAttendance() > 0) {
                 this.googleMap.addMarker(new MarkerOptions()

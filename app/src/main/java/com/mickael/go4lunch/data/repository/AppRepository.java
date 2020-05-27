@@ -47,7 +47,6 @@ public class AppRepository {
         this.restaurantApiService = restaurantApiService;
         this.restaurants = new MutableLiveData<>();
         this.users = new MutableLiveData<>();
-        this.initUsers();
     }
 
     public void getNearbyPlaces(LatLng location, String radius) {
@@ -109,7 +108,7 @@ public class AppRepository {
         return restaurants;
     }
 
-    private void initUsers() {
+    public void initUsers() {
         UserFirestoreDAO.getUsersCollection().addSnapshotListener((queryDocumentSnapshots, e) -> {
             if (e != null) {
                 Log.w(this.getClass().getSimpleName(), "Listen failed.", e);
