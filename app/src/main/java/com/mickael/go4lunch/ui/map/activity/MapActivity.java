@@ -11,11 +11,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -57,6 +59,7 @@ import butterknife.ButterKnife;
 import dagger.android.support.DaggerAppCompatActivity;
 
 import static com.mickael.go4lunch.ui.map.fragment.restaurant.RestaurantFragment.EXTRAS_RESTAURANT_ID;
+import static com.mickael.go4lunch.ui.restaurantdetails.RestaurantDetailsViewModel.KEY_MAP_RESTAURANT_ID;
 
 public class MapActivity extends DaggerAppCompatActivity {
 
@@ -161,14 +164,14 @@ public class MapActivity extends DaggerAppCompatActivity {
 
     private void updateUserInformation() {
         if (this.viewModel.isCurrentUserLOgged()) {
-            if (this.viewModel.getCurrentUser().getPhotoUrl() != null) {
+            if (this.viewModel.getFirebaseUser().getPhotoUrl() != null) {
                 Glide.with(this)
-                        .load(this.viewModel.getCurrentUser().getPhotoUrl())
+                        .load(this.viewModel.getFirebaseUser().getPhotoUrl())
                         .apply(RequestOptions.circleCropTransform())
                         .into(this.headerNavigationViewHolder.userProfilImage);
             }
-            String mail = TextUtils.isEmpty(this.viewModel.getCurrentUser().getEmail()) ? getString(R.string.no_email_found) : this.viewModel.getCurrentUser().getEmail();
-            String username = TextUtils.isEmpty(this.viewModel.getCurrentUser().getDisplayName()) ? getString(R.string.no_username_found) : this.viewModel.getCurrentUser().getDisplayName();
+            String mail = TextUtils.isEmpty(this.viewModel.getFirebaseUser().getEmail()) ? getString(R.string.no_email_found) : this.viewModel.getFirebaseUser().getEmail();
+            String username = TextUtils.isEmpty(this.viewModel.getFirebaseUser().getDisplayName()) ? getString(R.string.no_username_found) : this.viewModel.getFirebaseUser().getDisplayName();
             this.headerNavigationViewHolder.tvUserMail.setText(mail);
             this.headerNavigationViewHolder.tvUserName.setText(username);
         }
@@ -209,6 +212,15 @@ public class MapActivity extends DaggerAppCompatActivity {
         this.navigationView.setNavigationItemSelectedListener(item -> {
             switch (item.getItemId()) {
                 case R.id.navigation_user_lunch_item:
+                    if (this.viewModel.getCurrentUser().getLunchRestaurant() != null) {
+                        String userLunchPlaceId = this.viewModel.getCurrentUser().getLunchRestaurant().get(KEY_MAP_RESTAURANT_ID);
+                        Intent intent = new Intent(this, RestaurantDetailsActivity.class);
+                        intent.putExtra(EXTRAS_RESTAURANT_ID, userLunchPlaceId);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(this, "You have not yet chosen a restaurant", Toast.LENGTH_SHORT).show();
+                    }
+
                     break;
                 case R.id.navigation_user_settings_item:
                     break;
