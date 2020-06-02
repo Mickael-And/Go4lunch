@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.mickael.go4lunch">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 
     <application
         android:name=".base.Go4LunchApplication"
@@ -17,9 +18,12 @@
 
         <activity
             android:name=".ui.main.MainActivity"
+            android:configChanges="orientation|keyboardHidden"
             android:label="Go4Lunch"
             android:noHistory="true"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="LockedOrientationActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,11 +34,15 @@
         <activity
             android:name=".ui.map.activity.MapActivity"
             android:launchMode="singleTop"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="LockedOrientationActivity" />
 
         <activity
             android:name=".ui.restaurantdetails.RestaurantDetailsActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar"
+            tools:ignore="LockedOrientationActivity" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
