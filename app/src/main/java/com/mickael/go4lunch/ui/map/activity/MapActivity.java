@@ -1,6 +1,10 @@
 package com.mickael.go4lunch.ui.map.activity;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,10 +21,12 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.widget.Toolbar;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -46,10 +52,13 @@ import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.textview.MaterialTextView;
 import com.mickael.go4lunch.R;
 import com.mickael.go4lunch.di.ViewModelFactory;
+import com.mickael.go4lunch.notifications.AlarmReceiver;
+import com.mickael.go4lunch.ui.SettingsDialogFragment;
 import com.mickael.go4lunch.ui.main.MainActivity;
 import com.mickael.go4lunch.ui.restaurantdetails.RestaurantDetailsActivity;
 
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -58,6 +67,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import dagger.android.support.DaggerAppCompatActivity;
 
+import static com.mickael.go4lunch.ui.SettingsDialogFragment.NOTIFICATIONS_KEY;
+import static com.mickael.go4lunch.ui.SettingsDialogFragment.NOTIFICATIONS_REQUEST_CODE;
+import static com.mickael.go4lunch.ui.SettingsDialogFragment.SHARED_PREF_FILE;
 import static com.mickael.go4lunch.ui.map.fragment.restaurant.RestaurantFragment.EXTRAS_RESTAURANT_ID;
 import static com.mickael.go4lunch.ui.restaurantdetails.RestaurantDetailsViewModel.KEY_MAP_RESTAURANT_ID;
 
@@ -101,6 +113,26 @@ public class MapActivity extends DaggerAppCompatActivity {
         this.updateUserInformation();
         this.viewModel.initUsers();
         this.getLocationDevice();
+        this.initNotifications();
+    }
+
+    private void initNotifications() {
+        SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF_FILE, MODE_PRIVATE);
+
+        Intent alarmIntent = new Intent(this, AlarmReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, NOTIFICATIONS_REQUEST_CODE, alarmIntent, 0);
+
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        if (sharedPreferences.getBoolean(NOTIFICATIONS_KEY, true)) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.HOUR_OF_DAY, 12);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
+            alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
+        } else {
+            alarmManager.cancel(pendingIntent);
+        }
     }
 
     private void getLocationDevice() {
@@ -223,6 +255,16 @@ public class MapActivity extends DaggerAppCompatActivity {
 
                     break;
                 case R.id.navigation_user_settings_item:
+                    FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                    Fragment previous = getSupportFragmentManager().findFragmentByTag("dialog");
+                    if (previous != null) {
+                        fragmentTransaction.remove(previous);
+                    }
+                    fragmentTransaction.addToBackStack(null);
+
+                    DialogFragment newFragment = SettingsDialogFragment.newInstance();
+                    newFragment.show(fragmentTransaction, "dialog");
+
                     break;
                 case R.id.navigation_user_logout_item:
                     this.signOutUser();

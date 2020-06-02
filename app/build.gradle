@@ -41,7 +41,7 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
 
     // Firebase
-    implementation 'com.google.firebase:firebase-core:17.3.0'
+    implementation 'com.google.firebase:firebase-core:17.4.2'
     // FirebaseUI
     def firebase_ui_version = "6.2.0"
     implementation "com.firebaseui:firebase-ui-auth:$firebase_ui_version" // Authentification
@@ -52,7 +52,7 @@ dependencies {
     // Google maps
     implementation 'com.google.android.gms:play-services-maps:17.0.0'
     // Google Places
-    implementation 'com.google.android.libraries.places:places:2.2.0'
+    implementation 'com.google.android.libraries.places:places:2.3.0'
 
 
     // AppCompat
@@ -67,7 +67,7 @@ dependencies {
 
 
     // Navigation
-    def navigation_version = "2.3.0-alpha06"
+    def navigation_version = "2.3.0-beta01"
     implementation "androidx.navigation:navigation-fragment:$navigation_version"
     implementation "androidx.navigation:navigation-ui:$navigation_version"
     androidTestImplementation "androidx.navigation:navigation-testing:$navigation_version"
@@ -102,6 +102,7 @@ dependencies {
     def glide_version = "4.11.0"
     implementation "com.github.bumptech.glide:glide:$glide_version"
     annotationProcessor "com.github.bumptech.glide:compiler:$glide_version"
+
 
     // Tests unitaires
     testImplementation 'junit:junit:4.12'
