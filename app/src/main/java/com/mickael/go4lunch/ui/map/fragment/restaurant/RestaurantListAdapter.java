@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.bitmap.CenterCrop;
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners;
 import com.google.android.material.textview.MaterialTextView;
+import com.mickael.go4lunch.BuildConfig;
 import com.mickael.go4lunch.R;
 import com.mickael.go4lunch.data.model.Restaurant;
 import com.mickael.go4lunch.ui.map.fragment.restaurant.RestaurantFragment.OnItemClickListener;
@@ -79,7 +80,7 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
         String url = String.format(Locale.getDefault(), "https://maps.googleapis.com/maps/api/place/photo?" +
                 "maxheight=1600" +
                 "&photoreference=%s" +
-                "&key=AIzaSyDuiYTUSAt7OeV6tIoXzTVil6XW5j-NCwc", restaurant.getPhotos().get(0).getPhotoReference());
+                "&key=%s", restaurant.getPhotos().get(0).getPhotoReference(), BuildConfig.GOOGLE_WEB_API_KEY);
         Glide.with(holder.itemView)
                 .load(url)
                 .transform(new CenterCrop(), new RoundedCorners(25))

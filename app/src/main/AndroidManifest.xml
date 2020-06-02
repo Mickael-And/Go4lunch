@@ -46,7 +46,7 @@
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyAc-Ug3l0KjMCT7ogSkLwI7h-JIzNtKsfE" />
+            android:value="@string/GOOGLE_MAPS_API_KEY" />
 
         <receiver android:name=".notifications.AlarmReceiver" />
 

@@ -27,7 +27,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.mickael.go4lunch.BuildConfig;
 import com.mickael.go4lunch.R;
 import com.mickael.go4lunch.data.model.Restaurant;
 import com.mickael.go4lunch.di.ViewModelFactory;
@@ -72,7 +72,7 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback {
         super.onCreate(savedInstanceState);
         this.viewModel = new ViewModelProvider(this, viewModelFactory).get(MapFragmentViewModel.class);
         this.fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getContext());
-        Places.initialize(getContext(), getString(R.string.google_maps_key));
+        Places.initialize(getContext(), BuildConfig.GOOGLE_MAPS_API_KEY);
         Places.createClient(getContext());
     }
 
@@ -197,5 +197,4 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback {
         this.googleMap.moveCamera(CameraUpdateFactory
                 .newLatLngZoom(location, zoomValue));
     }
-
 }

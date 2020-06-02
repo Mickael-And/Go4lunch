@@ -15,6 +15,7 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textview.MaterialTextView;
+import com.mickael.go4lunch.BuildConfig;
 import com.mickael.go4lunch.R;
 import com.mickael.go4lunch.data.model.Restaurant;
 import com.mickael.go4lunch.data.model.User;
@@ -128,7 +129,7 @@ public class RestaurantDetailsActivity extends DaggerAppCompatActivity {
             String url = String.format(Locale.getDefault(), "https://maps.googleapis.com/maps/api/place/photo?" +
                     "maxheight=1600" +
                     "&photoreference=%s" +
-                    "&key=AIzaSyDuiYTUSAt7OeV6tIoXzTVil6XW5j-NCwc", restaurant.getPhotos().get(0).getPhotoReference());
+                    "&key=%s", restaurant.getPhotos().get(0).getPhotoReference(), BuildConfig.GOOGLE_WEB_API_KEY);
             Glide.with(this)
                     .load(url)
                     .centerCrop()

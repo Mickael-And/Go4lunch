@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.mickael.go4lunch.BuildConfig;
 import com.mickael.go4lunch.data.api.RestaurantApiService;
 import com.mickael.go4lunch.data.dao.UserFirestoreDAO;
 import com.mickael.go4lunch.data.model.Restaurant;
@@ -50,7 +51,8 @@ public class AppRepository {
     }
 
     public void getNearbyPlaces(LatLng location, String radius) {
-        this.disposable = this.restaurantApiService.nearbySearchRestaurantsRequest(String.format(Locale.getDefault(), "%s,%s", location.latitude, location.longitude), radius)
+        this.disposable = this.restaurantApiService.nearbySearchRestaurantsRequest(String.format(Locale.getDefault(), "%s,%s", location.latitude, location.longitude),
+                radius, BuildConfig.GOOGLE_WEB_API_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(nearbySearchRestaurantsApiResponse -> {
@@ -89,7 +91,7 @@ public class AppRepository {
     }
 
     public Single<RestaurantDetailsApiResponse> getRestaurantDetails(String placeId) {
-        return this.restaurantApiService.restaurantDetailsRequest(placeId);
+        return this.restaurantApiService.restaurantDetailsRequest(placeId, BuildConfig.GOOGLE_WEB_API_KEY);
     }
 
     private List<Restaurant> getRestaurantsDistance(List<Restaurant> restaurants, LatLng location) {
