@@ -14,6 +14,9 @@ import java.util.ArrayList;
 
 import javax.inject.Inject;
 
+/**
+ * {@link ViewModel} of {@link MainActivity}.
+ */
 public class MainActivityViewModel extends ViewModel {
 
     private static final String TAG = MainActivityViewModel.class.getSimpleName();
@@ -22,15 +25,28 @@ public class MainActivityViewModel extends ViewModel {
     public MainActivityViewModel() {
     }
 
+    /**
+     * Retrieves the user who is using the application.
+     *
+     * @return the connected Firebase user
+     */
     @Nullable
     private FirebaseUser getCurrentUser() {
         return FirebaseAuth.getInstance().getCurrentUser();
     }
 
+    /**
+     * Checks if the application user is connected to Firebase.
+     *
+     * @return true if connected
+     */
     Boolean isCurrentUserLOgged() {
         return (this.getCurrentUser() != null);
     }
 
+    /**
+     * Creation of a user in database if it does not exist.
+     */
     void createUserIfNeeded() {
         if (this.isCurrentUserLOgged()) {
             FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();

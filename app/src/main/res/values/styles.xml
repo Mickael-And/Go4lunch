@@ -23,22 +23,4 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
-
-    <style name="FacebookButton" parent="Widget.MaterialComponents.Button">
-        <item name="materialThemeOverlay">@style/FacebookButtonThemeOverlay</item>
-    </style>
-
-    <style name="FacebookButtonThemeOverlay">
-        <item name="colorPrimary">@color/facebookColor</item>
-    </style>
-
-    <style name="GoogleButton" parent="Widget.MaterialComponents.Button">
-        <item name="materialThemeOverlay">@style/GoogleButtonThemeOverlay</item>
-    </style>
-
-    <style name="GoogleButtonThemeOverlay">
-        <item name="colorPrimary">@color/googleColor</item>
-    </style>
-
-
 </resources>

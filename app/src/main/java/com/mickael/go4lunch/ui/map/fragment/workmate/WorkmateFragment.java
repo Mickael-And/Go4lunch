@@ -30,10 +30,7 @@ import dagger.android.support.DaggerFragment;
 import static com.mickael.go4lunch.ui.map.fragment.restaurant.RestaurantFragment.EXTRAS_RESTAURANT_ID;
 
 /**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link com.mickael.go4lunch.ui.map.fragment.restaurant.RestaurantFragment.OnItemClickListener}
- * interface.
+ * Fragment containing the lunch of all the colleagues.
  */
 public class WorkmateFragment extends DaggerFragment {
 
@@ -46,15 +43,13 @@ public class WorkmateFragment extends DaggerFragment {
     @Inject
     ViewModelFactory viewModelFactory;
 
-    private WorkmateFragmentViewModel viewModel;
-
     private WorkmatesListAdapter workmatesListAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.viewModel = new ViewModelProvider(this, this.viewModelFactory).get(WorkmateFragmentViewModel.class);
-        this.viewModel.getUsers().observe(this, this::manageUsersListe);
+        WorkmateFragmentViewModel viewModel = new ViewModelProvider(this, this.viewModelFactory).get(WorkmateFragmentViewModel.class);
+        viewModel.getUsers().observe(this, this::manageUsersListe);
     }
 
     @Override
@@ -67,6 +62,13 @@ public class WorkmateFragment extends DaggerFragment {
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        this.initWorkmatesList();
+    }
+
+    /**
+     * Initializes the list of users.
+     */
+    private void initWorkmatesList() {
         this.workmatesListAdapter = new WorkmatesListAdapter(user -> {
             if (user.getLunchRestaurant() != null) {
                 Intent intent = new Intent(getActivity(), RestaurantDetailsActivity.class);
@@ -79,6 +81,11 @@ public class WorkmateFragment extends DaggerFragment {
         this.recyclerView.setAdapter(this.workmatesListAdapter);
     }
 
+    /**
+     * Manages the visibility of the list of colleges as well as the content of the list.
+     *
+     * @param users users list
+     */
     private void manageUsersListe(List<User> users) {
         if (users != null && !users.isEmpty()) {
             this.recyclerView.setVisibility(View.VISIBLE);
@@ -90,6 +97,9 @@ public class WorkmateFragment extends DaggerFragment {
         }
     }
 
+    /**
+     * Callback interface allowing listening to a click on an item in the list.
+     */
     public interface OnItemClickListener {
         void onClick(User user);
     }

@@ -13,12 +13,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+/**
+ * Object containing the response of the API request looking for nearby restaurants.
+ */
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class NearbySearchRestaurantsApiResponse {
+
+    /**
+     * Lis of nearby restaurants.
+     */
     @SerializedName("results")
     @Expose
     private List<Restaurant> restaurants;

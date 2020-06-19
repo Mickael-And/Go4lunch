@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- FACEBOOK PURPOSE -->
+    <string name="facebook_application_id" translatable="false">310405193271096</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb310405193271096</string>
+
+    <!-- Twitter consumer key and secret -->
+    <string name="twitter_consumer_key" translatable="false">1ObP77xbNh1mDaLNUZHmmVzqi</string>
+    <string name="twitter_consumer_secret" translatable="false">TbfcqMZwxEUl60p8kto23xDb1y8CBNxZ1iCXKpSQ0iShmdCzes</string>
+
+    <!-- BOTTOM NAVIGATION ITEMS -->
+    <string name="bottom_navigation_map_restaurant_item">Onglet carte</string>
+    <string name="bottom_navigation_list_restaurant_item">Onglet liste</string>
+    <string name="bottom_navigation_workmates_item">Onglet collègues</string>
+
+    <!-- Used in NavigationDrawer -->
+    <string name="navigation_drawer_open">Ouvrir le tiroir de navigation</string>
+    <string name="navigation_drawer_close">Fermer le tiroir de navigation</string>
+
+    <!-- Default message user profil -->
+    <string name="no_email_found"> </string>
+    <string name="no_username_found"> </string>
+
+    <string name="app_name">Go4Lunch</string>
+    <string name="app_title">Go4Lunch</string>
+    <string name="app_subtitle">Trouvez un bon restaurant et invitez vos collègues pour le déjeuner!</string>
+    <string name="restaurant_image_description">Image d\'un restaurant</string>
+    <string name="logo_image_description">Image d\'une fourchette</string>
+    <string name="error_authentification_canceled">Authentification annulée</string>
+    <string name="error_no_internet">Pas d\internet</string>
+    <string name="error_unknown_error">Erreur inconnue</string>
+    <string name="navigation_header_profil_image_description">Image de profil utilisateur</string>
+    <string name="map_fragment_title">J\'ai faim!</string>
+    <string name="restaurant_fragment_title">J\'ai faim!</string>
+    <string name="workmates_fragment_title">Collègues disponibles</string>
+    <string name="restaurant_open">Ouvert</string>
+    <string name="restaurant_closed">Fermé</string>
+    <string name="unknown_opening_hours">Non renseigné</string>
+    <string name="text_sing_in_btn">Connexion</string>
+</resources>

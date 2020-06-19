@@ -20,7 +20,6 @@
             android:name=".ui.main.MainActivity"
             android:configChanges="orientation|keyboardHidden"
             android:label="Go4Lunch"
-            android:noHistory="true"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme.NoActionBar"
             tools:ignore="LockedOrientationActivity">

@@ -9,6 +9,9 @@ import javax.inject.Singleton;
 import dagger.Binds;
 import dagger.Module;
 
+/**
+ * Provided an instance of the application. In particular to recover the context.
+ */
 @Module
 public abstract class AppModule {
     @Singleton

@@ -24,6 +24,9 @@ import java.util.List;
 import static com.mickael.go4lunch.ui.restaurantdetails.RestaurantDetailsViewModel.KEY_MAP_RESTAURANT_ID;
 import static com.mickael.go4lunch.ui.restaurantdetails.RestaurantDetailsViewModel.KEY_MAP_RESTAURANT_NAME;
 
+/**
+ * Class allowing the creation of notifications when an intention is received from an alarm.
+ */
 public class AlarmReceiver extends BroadcastReceiver {
 
     private static final int NOTIFICATION_ID = 1;
@@ -51,6 +54,13 @@ public class AlarmReceiver extends BroadcastReceiver {
         });
     }
 
+    /**
+     * Creation of the notification.
+     *
+     * @param context application context
+     * @param user    user receiving notification
+     * @param users   users dining with the user
+     */
     private void sendVisualNotification(Context context, User user, List<User> users) {
 
         // 1 - Create an Intent that will be shown when user will click on the Notification

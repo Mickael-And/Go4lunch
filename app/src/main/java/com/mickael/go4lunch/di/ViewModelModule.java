@@ -19,6 +19,9 @@ import dagger.MapKey;
 import dagger.Module;
 import dagger.multibindings.IntoMap;
 
+/**
+ * Class allowing to provide the map containing all the providers of ViewModel.
+ */
 @Module
 public abstract class ViewModelModule {
 

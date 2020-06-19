@@ -44,6 +44,9 @@ import dagger.android.support.DaggerFragment;
 
 import static com.mickael.go4lunch.ui.map.fragment.restaurant.RestaurantFragment.EXTRAS_RESTAURANT_ID;
 
+/**
+ * Fragment containing the Google Map.
+ */
 public class MapFragment extends DaggerFragment implements OnMapReadyCallback {
     @BindView(R.id.map)
     MapView mapView;
@@ -121,7 +124,9 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback {
     @Override
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
+        // Subscription to the list of restaurants
         this.viewModel.getRestaurants().observe(this, this::displayRestaurants);
+        // Request permissions if necessary
         if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_PERMISSION_REQUEST_CODE);
         } else {
@@ -129,6 +134,7 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback {
             this.updateMapOnLocationDevice();
         }
 
+        // Opens the details window of a restaurant on the click of a marker
         this.googleMap.setOnMarkerClickListener(marker -> {
             Intent intent = new Intent(getActivity(), RestaurantDetailsActivity.class);
             intent.putExtra(EXTRAS_RESTAURANT_ID, marker.getTitle());
@@ -150,12 +156,18 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback {
         }
     }
 
+    /**
+     * Activates the tracking of the telephone's location on the Google Map.
+     */
     private void enableMyLocation() {
         if (this.googleMap != null) {
             this.googleMap.setMyLocationEnabled(true);
         }
     }
 
+    /**
+     * Moves the map to the phone position or a default position.
+     */
     private void updateMapOnLocationDevice() {
         Task<Location> locationResult = this.fusedLocationProviderClient.getLastLocation();
         locationResult.addOnCompleteListener(getActivity(), task -> {
@@ -175,6 +187,11 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback {
         });
     }
 
+    /**
+     * Add markers to the map.
+     *
+     * @param restaurants list of restaurants to display
+     */
     private void displayRestaurants(List<Restaurant> restaurants) {
         this.googleMap.clear();
 
@@ -193,6 +210,12 @@ public class MapFragment extends DaggerFragment implements OnMapReadyCallback {
         }
     }
 
+    /**
+     * Moves the map to given coordinates with a given zoom.
+     *
+     * @param location  coordinates where to move the map
+     * @param zoomValue zoom for which we want to display the map
+     */
     private void moveMap(LatLng location, float zoomValue) {
         this.googleMap.moveCamera(CameraUpdateFactory
                 .newLatLngZoom(location, zoomValue));

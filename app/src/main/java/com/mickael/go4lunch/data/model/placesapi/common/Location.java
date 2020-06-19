@@ -7,12 +7,22 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+/**
+ * Place coordinates.
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Location {
+    /**
+     * Latitude.
+     */
     double lat;
+
+    /**
+     * Longitude.
+     */
     double lng;
 }

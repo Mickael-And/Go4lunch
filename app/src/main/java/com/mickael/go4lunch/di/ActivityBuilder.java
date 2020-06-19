@@ -10,6 +10,9 @@ import com.mickael.go4lunch.ui.restaurantdetails.RestaurantDetailsActivity;
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
 
+/**
+ * Class used to provide the Dagger dependency tree with activities / fragments that will need injections.
+ */
 @Module
 public abstract class ActivityBuilder {
     @ContributesAndroidInjector

@@ -73,6 +73,9 @@ import static com.mickael.go4lunch.ui.SettingsDialogFragment.SHARED_PREF_FILE;
 import static com.mickael.go4lunch.ui.map.fragment.restaurant.RestaurantFragment.EXTRAS_RESTAURANT_ID;
 import static com.mickael.go4lunch.ui.restaurantdetails.RestaurantDetailsViewModel.KEY_MAP_RESTAURANT_ID;
 
+/**
+ * Main activity containing the different fragments.
+ */
 public class MapActivity extends DaggerAppCompatActivity {
 
     private static final int AUTOCOMPLETE_REQUEST_CODE = 1;
@@ -94,8 +97,14 @@ public class MapActivity extends DaggerAppCompatActivity {
 
     private MapActivityViewModel viewModel;
 
+    /**
+     * ViewHolder containing user information in the navigation menu.
+     */
     private HeaderNavigationViewHolder headerNavigationViewHolder;
 
+    /**
+     * Device coordinates.
+     */
     private LatLng locationDevice;
 
     @Override
@@ -116,6 +125,9 @@ public class MapActivity extends DaggerAppCompatActivity {
         this.initNotifications();
     }
 
+    /**
+     * Creation of the alarm allowing the sending of a notification at 12 noon each day.
+     */
     private void initNotifications() {
         SharedPreferences sharedPreferences = getSharedPreferences(SHARED_PREF_FILE, MODE_PRIVATE);
 
@@ -135,6 +147,9 @@ public class MapActivity extends DaggerAppCompatActivity {
         }
     }
 
+    /**
+     * Allows the retrieval of device coordinates.
+     */
     private void getLocationDevice() {
         FusedLocationProviderClient fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(this);
         Task<Location> locationResult = fusedLocationProviderClient.getLastLocation();
@@ -150,6 +165,7 @@ public class MapActivity extends DaggerAppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        //Return to application launch activity if user is not logged in
         if (!this.viewModel.isCurrentUserLOgged()) {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
@@ -167,6 +183,7 @@ public class MapActivity extends DaggerAppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.search_item:
+                //Launch of Google search bar
                 List<Place.Field> fields = Arrays.asList(Place.Field.ID, Place.Field.NAME);
                 Intent intent = new Autocomplete.IntentBuilder(AutocompleteActivityMode.OVERLAY, fields)
                         .setTypeFilter(TypeFilter.ESTABLISHMENT)
@@ -194,6 +211,9 @@ public class MapActivity extends DaggerAppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    /**
+     * Updates the information displayed in the navigation menu for the user.
+     */
     private void updateUserInformation() {
         if (this.viewModel.isCurrentUserLOgged()) {
             if (this.viewModel.getFirebaseUser().getPhotoUrl() != null) {
@@ -278,6 +298,9 @@ public class MapActivity extends DaggerAppCompatActivity {
         });
     }
 
+    /**
+     * Disconnects the user from firebase and returns to the launch activity({@link MainActivity}).
+     */
     private void signOutUser() {
         AuthUI.getInstance().signOut(this).addOnSuccessListener(this, aVoid -> {
             Intent intent = new Intent(this, MainActivity.class);
@@ -305,6 +328,9 @@ public class MapActivity extends DaggerAppCompatActivity {
         }
     }
 
+    /**
+     * ViewHolder containing the information of the user connected to Firebase.
+     */
     static class HeaderNavigationViewHolder {
         @BindView(R.id.img_user_profil)
         ImageView userProfilImage;

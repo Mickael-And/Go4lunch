@@ -14,6 +14,9 @@ import static com.mickael.go4lunch.ui.SettingsDialogFragment.NOTIFICATIONS_KEY;
 import static com.mickael.go4lunch.ui.SettingsDialogFragment.NOTIFICATIONS_REQUEST_CODE;
 import static com.mickael.go4lunch.ui.SettingsDialogFragment.SHARED_PREF_FILE;
 
+/**
+ * Class allowing to relaunch an "alarm" for the creation of notifications when the telephone restarts.
+ */
 public class DeviceBootReceiver extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {

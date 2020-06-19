@@ -20,8 +20,14 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+/**
+ * {@link RecyclerView.Adapter} that can display a {@link User}.
+ */
 public class WorkmatesDetailsAdapter extends RecyclerView.Adapter<WorkmatesDetailsAdapter.WorkmateViewHolder> {
 
+    /**
+     * Users list to display.
+     */
     private List<User> users;
 
     WorkmatesDetailsAdapter() {
@@ -50,11 +56,19 @@ public class WorkmatesDetailsAdapter extends RecyclerView.Adapter<WorkmatesDetai
         return this.users.size();
     }
 
+    /**
+     * Updates the list of users to display.
+     *
+     * @param users users to display
+     */
     void updateList(List<User> users) {
         this.users = users;
         notifyDataSetChanged();
     }
 
+    /**
+     * ViewHolder containing an item.
+     */
     public static class WorkmateViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.img_user)
         ImageView imgUser;

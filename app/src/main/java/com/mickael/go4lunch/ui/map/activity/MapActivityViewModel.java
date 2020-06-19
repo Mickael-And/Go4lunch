@@ -15,10 +15,19 @@ import javax.inject.Inject;
 
 import lombok.Getter;
 
+/**
+ * {@link ViewModel} of {@link MapActivity}.
+ */
 public class MapActivityViewModel extends ViewModel {
 
+    /**
+     * Application repository.
+     */
     private AppRepository appRepository;
 
+    /**
+     * Connected user.
+     */
     @Getter
     private User currentUser;
 
@@ -27,11 +36,19 @@ public class MapActivityViewModel extends ViewModel {
         this.appRepository = appRepository;
     }
 
-    public void initUsers() {
+    /**
+     * Initializes the list used in the application containing all Go4Lunch users.
+     */
+    void initUsers() {
         this.appRepository.initUsers();
         this.getUser(getFirebaseUser().getUid());
     }
 
+    /**
+     * Retrieves in firesotre database the information of the connected user.
+     *
+     * @param uid id de l'utilisateur
+     */
     private void getUser(String uid) {
         UserFirestoreDAO.getUsersCollection().document(uid).addSnapshotListener((documentSnapshot, e) -> {
             if (e != null) {
@@ -47,11 +64,21 @@ public class MapActivityViewModel extends ViewModel {
         });
     }
 
+    /**
+     * Get the connected Firebase user.
+     *
+     * @return connected user
+     */
     @Nullable
     FirebaseUser getFirebaseUser() {
         return FirebaseAuth.getInstance().getCurrentUser();
     }
 
+    /**
+     * Checks if the application user is connected to Firebase.
+     *
+     * @return true if connected
+     */
     Boolean isCurrentUserLOgged() {
         return (this.getFirebaseUser() != null);
     }

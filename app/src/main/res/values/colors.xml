@@ -7,7 +7,5 @@
     <color name="colorSurface">#FFFFFF</color>
     <color name="colorError">#B00020</color>
     <color name="colorOnSecondary">#FFFFFF</color>
-    <color name="facebookColor">#507CC0</color>
-    <color name="googleColor">#DF4930</color>
 
 </resources>

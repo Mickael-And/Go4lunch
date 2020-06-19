@@ -5,6 +5,9 @@ import com.mickael.go4lunch.di.DaggerApplicationGraph;
 import dagger.android.AndroidInjector;
 import dagger.android.support.DaggerApplication;
 
+/**
+ * Represents the application.
+ */
 public class Go4LunchApplication extends DaggerApplication {
     @Override
     protected AndroidInjector<? extends DaggerApplication> applicationInjector() {

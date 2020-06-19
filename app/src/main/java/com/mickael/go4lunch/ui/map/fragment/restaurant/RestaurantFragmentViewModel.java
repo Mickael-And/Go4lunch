@@ -12,8 +12,14 @@ import javax.inject.Inject;
 
 import lombok.Getter;
 
+/**
+ * {@link ViewModel} of {@link RestaurantFragment}.
+ */
 public class RestaurantFragmentViewModel extends ViewModel {
 
+    /**
+     * List of nearby restaurants
+     */
     @Getter
     private MutableLiveData<List<Restaurant>> restaurants;
 

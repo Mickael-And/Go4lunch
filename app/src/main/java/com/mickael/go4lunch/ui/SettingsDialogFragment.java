@@ -25,6 +25,9 @@ import butterknife.ButterKnife;
 
 import static android.content.Context.MODE_PRIVATE;
 
+/**
+ * Dialog box containing the configurations.
+ */
 public class SettingsDialogFragment extends DialogFragment {
 
     @BindView(R.id.cb_notifications)
@@ -66,6 +69,7 @@ public class SettingsDialogFragment extends DialogFragment {
             editor.putBoolean(NOTIFICATIONS_KEY, isChecked);
             editor.apply();
 
+            // Set up an alarm for sending notifications
             AlarmManager alarmManager = (AlarmManager) getContext().getSystemService(Context.ALARM_SERVICE);
             if (isChecked) {
                 Calendar calendar = Calendar.getInstance();

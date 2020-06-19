@@ -28,10 +28,7 @@ import butterknife.ButterKnife;
 import dagger.android.support.DaggerFragment;
 
 /**
- * A fragment representing a list of Items.
- * <p/>
- * Activities containing this fragment MUST implement the {@link OnItemClickListener}
- * interface.
+ * Fragment containing the list of restaurants.
  */
 public class RestaurantFragment extends DaggerFragment {
 
@@ -75,6 +72,12 @@ public class RestaurantFragment extends DaggerFragment {
         this.recyclerView.setAdapter(this.restaurantsListAdapter);
     }
 
+    /**
+     * Management of display of the list of restaurants.
+     * A message is displayed if there are no restaurants to display.
+     *
+     * @param restaurants restaurants to display
+     */
     private void manageRestaurantList(List<Restaurant> restaurants) {
         if (restaurants != null && !restaurants.isEmpty()) {
             this.recyclerView.setVisibility(View.VISIBLE);
@@ -86,6 +89,9 @@ public class RestaurantFragment extends DaggerFragment {
         }
     }
 
+    /**
+     * Callback interface allowing listening to a click on an item in the list.
+     */
     public interface OnItemClickListener {
         void onClick(Restaurant restaurant);
     }

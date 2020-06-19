@@ -35,6 +35,9 @@ import dagger.android.support.DaggerAppCompatActivity;
 
 import static com.mickael.go4lunch.ui.restaurantdetails.RestaurantDetailsViewModel.KEY_MAP_RESTAURANT_ID;
 
+/**
+ * Activity displaying details of a restaurant.
+ */
 public class RestaurantDetailsActivity extends DaggerAppCompatActivity {
     @BindView(R.id.restaurant_details_coordinatorlayout)
     CoordinatorLayout coordinatorLayout;
@@ -73,15 +76,32 @@ public class RestaurantDetailsActivity extends DaggerAppCompatActivity {
         }
         this.viewModel.getSelectedRestaurant().observe(this, this::updateRestaurantComponents);
         this.viewModel.getCurrentUser().observe(this, this::updateUserComponents);
-        this.adapter = new WorkmatesDetailsAdapter();
-        this.workmatesList.setAdapter(this.adapter);
+        this.initWorkmatesList();
         this.viewModel.getUsers().observe(this, this::updateUserList);
     }
 
+    /**
+     * Initializes the list of colleagues.
+     */
+    private void initWorkmatesList() {
+        this.adapter = new WorkmatesDetailsAdapter();
+        this.workmatesList.setAdapter(this.adapter);
+    }
+
+    /**
+     * Updates the list of colleagues to display.
+     *
+     * @param users users to display
+     */
     private void updateUserList(List<User> users) {
         this.adapter.updateList(users);
     }
 
+    /**
+     * Updates the components of the view linked to the user.
+     *
+     * @param user user
+     */
     private void updateUserComponents(User user) {
         if (user.getLunchRestaurant() != null && user.getLunchRestaurant().get(KEY_MAP_RESTAURANT_ID).equals(this.viewModel.getSelectedRestaurant().getValue().getPlaceId())) {
             this.fabRestaurantChoosen.setImageResource(R.drawable.ic_check_circle_black_24dp);
@@ -110,6 +130,11 @@ public class RestaurantDetailsActivity extends DaggerAppCompatActivity {
         }
     }
 
+    /**
+     * Updates components related to the restaurant.
+     *
+     * @param restaurant restaurant
+     */
     private void updateRestaurantComponents(Restaurant restaurant) {
         if (restaurant != null) {
             this.updateHeaderPhoto(restaurant);
@@ -119,11 +144,22 @@ public class RestaurantDetailsActivity extends DaggerAppCompatActivity {
         }
     }
 
+    /**
+     * Transforms the restaurant ratio to 3 stars.
+     *
+     * @param rating the ratio in 5 stars
+     * @return the ratio in 3 stars
+     */
     private float updateRestaurantRating(String rating) {
         float restaurantRating = Float.parseFloat(rating);
         return (3 * restaurantRating) / 5;
     }
 
+    /**
+     * Updates the photo of the restaurant.
+     *
+     * @param restaurant restaurant
+     */
     private void updateHeaderPhoto(Restaurant restaurant) {
         if (restaurant.getPhotos() != null) {
             String url = String.format(Locale.getDefault(), "https://maps.googleapis.com/maps/api/place/photo?" +

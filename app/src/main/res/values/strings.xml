@@ -3,6 +3,10 @@
     <string name="facebook_application_id" translatable="false">310405193271096</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb310405193271096</string>
 
+    <!-- Twitter consumer key and secret -->
+    <string name="twitter_consumer_key" translatable="false">1ObP77xbNh1mDaLNUZHmmVzqi</string>
+    <string name="twitter_consumer_secret" translatable="false">TbfcqMZwxEUl60p8kto23xDb1y8CBNxZ1iCXKpSQ0iShmdCzes</string>
+
     <!-- BOTTOM NAVIGATION ITEMS -->
     <string name="bottom_navigation_map_restaurant_item">Map View</string>
     <string name="bottom_navigation_list_restaurant_item">List View</string>
@@ -19,8 +23,6 @@
     <string name="app_name">Go4Lunch</string>
     <string name="app_title">Go4Lunch</string>
     <string name="app_subtitle">Find a nice restaurant and invite your co-workers for lunch!</string>
-    <string name="text_fb_btn">Sign in with Facebook</string>
-    <string name="text_gle_btn">Sign in with Google</string>
     <string name="restaurant_image_description">Restaurant image</string>
     <string name="logo_image_description">Fork image</string>
     <string name="error_authentification_canceled">Authentification canceled</string>
@@ -33,4 +35,5 @@
     <string name="restaurant_open">Open</string>
     <string name="restaurant_closed">Closed</string>
     <string name="unknown_opening_hours">Not specified</string>
+    <string name="text_sing_in_btn">Sign in</string>
 </resources>

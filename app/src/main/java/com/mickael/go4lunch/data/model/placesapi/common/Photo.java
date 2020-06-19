@@ -10,12 +10,18 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.FieldDefaults;
 
+/**
+ * Place reference photo.
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Photo {
+    /**
+     * Reference photo id.
+     */
     @SerializedName("photo_reference")
     @Expose
     private String photoReference;

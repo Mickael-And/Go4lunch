@@ -15,7 +15,8 @@ import com.mickael.go4lunch.R;
 import com.mickael.go4lunch.di.ViewModelFactory;
 import com.mickael.go4lunch.ui.map.activity.MapActivity;
 
-import java.util.Collections;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -24,6 +25,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import dagger.android.support.DaggerAppCompatActivity;
 
+/**
+ * Application launch activity.
+ */
 public class MainActivity extends DaggerAppCompatActivity {
 
     @BindView(R.id.main_coordinator_Layout)
@@ -53,7 +57,7 @@ public class MainActivity extends DaggerAppCompatActivity {
     }
 
     @Override
-    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         this.handleResponseAfterSignIn(requestCode, resultCode, data);
     }
@@ -61,26 +65,17 @@ public class MainActivity extends DaggerAppCompatActivity {
     /**
      * Launch Google Sign-In Activity.
      */
-    private void startGoogleSignInActivity() {
-        startActivityForResult(AuthUI.getInstance()
-                .createSignInIntentBuilder()
-                .setTheme(R.style.AppTheme)
-                .setAvailableProviders(
-                        Collections.singletonList(new AuthUI.IdpConfig.GoogleBuilder().build()))
-                .setIsSmartLockEnabled(false, true)
-                .build(), CODE_SIGN_IN_ACTIVITY);
-    }
+    private void startSignInActivity() {
+        List<AuthUI.IdpConfig> providers = Arrays.asList(
+                new AuthUI.IdpConfig.EmailBuilder().build(),
+                new AuthUI.IdpConfig.GoogleBuilder().build(),
+                new AuthUI.IdpConfig.TwitterBuilder().build(),
+                new AuthUI.IdpConfig.FacebookBuilder().build());
 
-    /**
-     * Launch Facebook Sign-In Activity.
-     */
-    private void startFacebookSignInActivity() {
         startActivityForResult(AuthUI.getInstance()
                 .createSignInIntentBuilder()
-                .setTheme(R.style.AppTheme)
-                .setAvailableProviders(
-                        Collections.singletonList(new AuthUI.IdpConfig.FacebookBuilder().build()))
-                .setIsSmartLockEnabled(false, true)
+                .setAvailableProviders(providers)
+                .setIsSmartLockEnabled(false)
                 .build(), CODE_SIGN_IN_ACTIVITY);
     }
 
@@ -121,13 +116,8 @@ public class MainActivity extends DaggerAppCompatActivity {
         Snackbar.make(coordinatorLayout, message, Snackbar.LENGTH_SHORT).show();
     }
 
-    @OnClick(R.id.btn_gle_sign_in)
+    @OnClick(R.id.btn_sign_in)
     public void onClickGoogleLoginButton() {
-        this.startGoogleSignInActivity();
-    }
-
-    @OnClick(R.id.btn_fb_sign_in)
-    public void onClickFacebookLoginButton() {
-        this.startFacebookSignInActivity();
+        this.startSignInActivity();
     }
 }

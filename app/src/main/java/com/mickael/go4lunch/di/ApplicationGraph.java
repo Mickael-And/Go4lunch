@@ -12,7 +12,7 @@ import dagger.android.support.AndroidSupportInjectionModule;
         AppModule.class,
         ActivityBuilder.class,
         AndroidSupportInjectionModule.class,
-        ApiModule.class,
+        GoogleApiModule.class,
         ViewModelModule.class})
 @Singleton
 public interface ApplicationGraph extends AndroidInjector<Go4LunchApplication> {

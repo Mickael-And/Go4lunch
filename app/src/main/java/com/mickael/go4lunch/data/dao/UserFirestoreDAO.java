@@ -9,10 +9,21 @@ import com.mickael.go4lunch.data.model.User;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * DAO allowing user management in Firestore database.
+ */
 public class UserFirestoreDAO {
+
+    /**
+     * Name of the user collection..
+     */
     private static final String COLLECTION_NAME = "users";
 
-    // COLLECTION REFERENCE
+    /**
+     * User collection reference.
+     *
+     * @return the reference of the collection
+     */
     public static CollectionReference getUsersCollection() {
         return FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
     }

@@ -12,8 +12,14 @@ import javax.inject.Inject;
 
 import lombok.Getter;
 
+/**
+ * {@link ViewModel} of {@link WorkmateFragment}.
+ */
 public class WorkmateFragmentViewModel extends ViewModel {
 
+    /**
+     * Users list.
+     */
     @Getter
     private MutableLiveData<List<User>> users;
 

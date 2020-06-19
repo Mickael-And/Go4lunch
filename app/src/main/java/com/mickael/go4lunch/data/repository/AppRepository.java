@@ -30,18 +30,28 @@ import retrofit2.HttpException;
 
 import static com.mickael.go4lunch.ui.restaurantdetails.RestaurantDetailsViewModel.KEY_MAP_RESTAURANT_ID;
 
+/**
+ * Application repository.
+ */
 @Singleton
 public class AppRepository {
 
+    /**
+     * Interface allowing Google API calls to obtain restaurants and information.
+     */
     private RestaurantApiService restaurantApiService;
 
+    /**
+     * List of users in the form of {@link androidx.lifecycle.LiveData}.
+     */
     @Getter
     private MutableLiveData<List<User>> users;
 
+    /**
+     * List of nearby restaurants as {@link androidx.lifecycle.LiveData}.
+     */
     @Getter
     private MutableLiveData<List<Restaurant>> restaurants;
-
-    private Disposable disposable;
 
     @Inject
     public AppRepository(RestaurantApiService restaurantApiService) {
@@ -50,8 +60,14 @@ public class AppRepository {
         this.users = new MutableLiveData<>();
     }
 
+    /**
+     * Get nearby restaurants.
+     *
+     * @param location starting position for research
+     * @param radius   search radius
+     */
     public void getNearbyPlaces(LatLng location, String radius) {
-        this.disposable = this.restaurantApiService.nearbySearchRestaurantsRequest(String.format(Locale.getDefault(), "%s,%s", location.latitude, location.longitude),
+        Disposable disposable = this.restaurantApiService.nearbySearchRestaurantsRequest(String.format(Locale.getDefault(), "%s,%s", location.latitude, location.longitude),
                 radius, BuildConfig.GOOGLE_WEB_API_KEY)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -72,7 +88,12 @@ public class AppRepository {
                 });
     }
 
-    public void updateRestaurantList(List<User> users) {
+    /**
+     * Update nearby restaurants list.
+     *
+     * @param users application users
+     */
+    private void updateRestaurantList(List<User> users) {
         List<Restaurant> restaurants = this.restaurants.getValue();
         if (users != null && restaurants != null) {
             for (Restaurant restaurant : restaurants) {
@@ -90,10 +111,23 @@ public class AppRepository {
         }
     }
 
+    /**
+     * Get the details of a restaurant from its id.
+     *
+     * @param placeId id of restaurant requested
+     * @return API response
+     */
     public Single<RestaurantDetailsApiResponse> getRestaurantDetails(String placeId) {
         return this.restaurantApiService.restaurantDetailsRequest(placeId, BuildConfig.GOOGLE_WEB_API_KEY);
     }
 
+    /**
+     * Get restaurants distance to device.
+     *
+     * @param restaurants nearby restaurants list
+     * @param location    device position
+     * @return the list of nearby restaurants with the distance from the phone
+     */
     private List<Restaurant> getRestaurantsDistance(List<Restaurant> restaurants, LatLng location) {
         for (Restaurant restaurant : restaurants) {
             Location deviceLocation = new Location("Device location");
@@ -110,6 +144,9 @@ public class AppRepository {
         return restaurants;
     }
 
+    /**
+     * Initializes listening to the list of users of the application in the Firestore database.
+     */
     public void initUsers() {
         UserFirestoreDAO.getUsersCollection().addSnapshotListener((queryDocumentSnapshots, e) -> {
             if (e != null) {

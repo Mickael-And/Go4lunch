@@ -30,7 +30,14 @@ import static com.mickael.go4lunch.ui.restaurantdetails.RestaurantDetailsViewMod
  */
 public class WorkmatesListAdapter extends RecyclerView.Adapter<WorkmatesListAdapter.WorkmateViewHolder> {
 
+    /**
+     * User list.
+     */
     private List<User> users;
+
+    /**
+     * Callback interface.
+     */
     private final WorkmateFragment.OnItemClickListener clickListener;
 
     WorkmatesListAdapter(WorkmateFragment.OnItemClickListener listener) {
@@ -67,11 +74,22 @@ public class WorkmatesListAdapter extends RecyclerView.Adapter<WorkmatesListAdap
         return users.size();
     }
 
+    /**
+     * Updates the list of users to display.
+     *
+     * @param users users to display
+     */
     void updateList(List<User> users) {
         this.users = users;
         notifyDataSetChanged();
     }
 
+    /**
+     * Updates the name of the restaurant where the user is going to dine this afternoon
+     *
+     * @param user   user
+     * @param holder view containing a user
+     */
     private void updateNoonRestaurantName(User user, WorkmateViewHolder holder) {
         if (user.getLunchRestaurant() != null) {
             Map<String, String> restaurantField = user.getLunchRestaurant();
@@ -81,6 +99,9 @@ public class WorkmatesListAdapter extends RecyclerView.Adapter<WorkmatesListAdap
         }
     }
 
+    /**
+     * ViewHolder containing an item.
+     */
     public static class WorkmateViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.img_user)
         ImageView imgUser;

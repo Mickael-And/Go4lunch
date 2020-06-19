@@ -31,10 +31,17 @@ import butterknife.ButterKnife;
  */
 public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAdapter.RestaurantViewHolder> {
 
+    /**
+     * List of restaurants to display.
+     */
     private List<Restaurant> restaurants;
+
+    /**
+     * Callback interface.
+     */
     private final OnItemClickListener clickListener;
 
-    public RestaurantListAdapter(List<Restaurant> restaurants, OnItemClickListener listener) {
+    RestaurantListAdapter(List<Restaurant> restaurants, OnItemClickListener listener) {
         this.restaurants = restaurants;
         this.clickListener = listener;
     }
@@ -61,6 +68,12 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
         holder.itemView.setOnClickListener(view -> clickListener.onClick(restaurant));
     }
 
+    /**
+     * Updates the display indicating whether a restaurant is open / closed.
+     *
+     * @param holder     list item
+     * @param restaurant restaurant represented in the item
+     */
     private void updateItemHours(RestaurantViewHolder holder, Restaurant restaurant) {
         if (restaurant.getOpeningHours() != null) {
             if (restaurant.getOpeningHours().isOpenNow()) {
@@ -76,6 +89,12 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
         }
     }
 
+    /**
+     * Update restaurant photo.
+     *
+     * @param holder     list item
+     * @param restaurant restaurant displayed in the item
+     */
     private void updateItemPhoto(RestaurantViewHolder holder, Restaurant restaurant) {
         String url = String.format(Locale.getDefault(), "https://maps.googleapis.com/maps/api/place/photo?" +
                 "maxheight=1600" +
@@ -87,6 +106,12 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
                 .into(holder.restaurantImg);
     }
 
+    /**
+     * Updates the restaurant ratio with 3 stars from a 5 star ratio.
+     *
+     * @param rating ratio of 5 stars
+     * @return ratio of 3 stars
+     */
     private float updateRestaurantRating(String rating) {
         float restaurantRating = Float.parseFloat(rating);
         return (3 * restaurantRating) / 5;
@@ -97,11 +122,19 @@ public class RestaurantListAdapter extends RecyclerView.Adapter<RestaurantListAd
         return restaurants.size();
     }
 
-    public void updateList(List<Restaurant> pRestaurants) {
+    /**
+     * Updates the list of restaurants to display.
+     *
+     * @param pRestaurants restaurants to display
+     */
+    void updateList(List<Restaurant> pRestaurants) {
         this.restaurants = pRestaurants;
         notifyDataSetChanged();
     }
 
+    /**
+     * ViewHolder containing an item.
+     */
     public static class RestaurantViewHolder extends RecyclerView.ViewHolder {
         @BindView(R.id.tv_restaurant_name)
         MaterialTextView restaurantName;

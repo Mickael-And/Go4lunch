@@ -28,6 +28,9 @@ import io.reactivex.schedulers.Schedulers;
 import lombok.Getter;
 import retrofit2.HttpException;
 
+/**
+ * {@link ViewModel} of {@link RestaurantDetailsActivity}.
+ */
 public class RestaurantDetailsViewModel extends ViewModel {
 
     private static final String TAG = RestaurantDetailsViewModel.class.getSimpleName();
@@ -40,9 +43,15 @@ public class RestaurantDetailsViewModel extends ViewModel {
     @Getter
     private MutableLiveData<Restaurant> selectedRestaurant;
 
+    /**
+     * Current user.
+     */
     @Getter
     private MutableLiveData<User> currentUser;
 
+    /**
+     * Users list.
+     */
     @Getter
     private MediatorLiveData<List<User>> users;
 
@@ -56,6 +65,11 @@ public class RestaurantDetailsViewModel extends ViewModel {
         this.users = new MediatorLiveData<>();
     }
 
+    /**
+     * Initializes the view from a given restaurant id.
+     *
+     * @param restaurantId restaurant id
+     */
     void initView(String restaurantId) {
         this.disposable = this.appRepository.getRestaurantDetails(restaurantId)
                 .subscribeOn(Schedulers.io())
@@ -75,6 +89,9 @@ public class RestaurantDetailsViewModel extends ViewModel {
                 });
     }
 
+    /**
+     * Get the current user.
+     */
     private void getUser() {
         if (this.isCurrentUserLOgged()) {
             UserFirestoreDAO.getUser(FirebaseAuth.getInstance().getCurrentUser().getUid()).addOnCompleteListener(task -> {
@@ -93,11 +110,14 @@ public class RestaurantDetailsViewModel extends ViewModel {
         }
     }
 
+    /**
+     * Get the list of users by restaurant.
+     */
     private void getUsersByRestaurant() {
         Restaurant restaurant = this.getSelectedRestaurant().getValue();
         User currentUser = this.getCurrentUser().getValue();
 
-        users.addSource(this.appRepository.getUsers(), users1 -> {
+        this.users.addSource(this.appRepository.getUsers(), users1 -> {
             if (restaurant != null && currentUser != null) {
                 List<User> userAtNoon = new ArrayList<>();
                 for (User user : users1) {
@@ -111,10 +131,18 @@ public class RestaurantDetailsViewModel extends ViewModel {
         });
     }
 
+    /**
+     * Indicates whether the current user is connected to Firebase.
+     *
+     * @return true if connected
+     */
     Boolean isCurrentUserLOgged() {
         return (FirebaseAuth.getInstance().getCurrentUser() != null);
     }
 
+    /**
+     * Allows you to choose the restaurant for lunch.
+     */
     void chooseRestaurant() {
         User currentUser = this.currentUser.getValue();
         Restaurant selectedRestaurant = this.selectedRestaurant.getValue();
@@ -140,6 +168,9 @@ public class RestaurantDetailsViewModel extends ViewModel {
         }
     }
 
+    /**
+     * Apply the modifications made by the user.
+     */
     void saveUserModification() {
         User currentUser = this.currentUser.getValue();
         if (currentUser != null) {
@@ -150,6 +181,12 @@ public class RestaurantDetailsViewModel extends ViewModel {
         }
     }
 
+    /**
+     * Lets like a restaurant.
+     *
+     * @return true if the restaurant is liked
+     * @throws Exception if impossible to apply a choice
+     */
     boolean likeRestaurant() throws Exception {
         boolean isLike;
         User currentUser = this.currentUser.getValue();

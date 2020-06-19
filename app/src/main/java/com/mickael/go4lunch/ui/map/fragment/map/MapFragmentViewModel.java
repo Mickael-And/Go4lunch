@@ -13,10 +13,19 @@ import javax.inject.Inject;
 
 import lombok.Getter;
 
+/**
+ * {@link ViewModel} of {@link MapFragment}.
+ */
 public class MapFragmentViewModel extends ViewModel {
 
+    /**
+     * Application repository.
+     */
     private AppRepository appRepository;
 
+    /**
+     * List of nearby restaurants.
+     */
     @Getter
     private MutableLiveData<List<Restaurant>> restaurants;
 
@@ -26,7 +35,13 @@ public class MapFragmentViewModel extends ViewModel {
         this.restaurants = this.appRepository.getRestaurants();
     }
 
-    public void initRestaurantPlaces(LatLng location, String radius) {
+    /**
+     * Ask to find nearby restaurants.
+     *
+     * @param location coordinates from which we start the search
+     * @param radius   radius where to find restaurants
+     */
+    void initRestaurantPlaces(LatLng location, String radius) {
         this.appRepository.getNearbyPlaces(location, radius);
     }
 }
