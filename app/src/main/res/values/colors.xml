@@ -8,4 +8,9 @@
     <color name="colorError">#B00020</color>
     <color name="colorOnSecondary">#FFFFFF</color>
 
+    <!-- Chat colors -->
+    <color name="colorGreen">#6BB18C</color>
+    <color name="colorSandLight">#ECDAAF</color>
+    <color name="colorSand">#EBCB94</color>
+
 </resources>

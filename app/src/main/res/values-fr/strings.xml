@@ -4,14 +4,10 @@
     <string name="facebook_application_id" translatable="false">310405193271096</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb310405193271096</string>
 
-    <!-- Twitter consumer key and secret -->
-    <string name="twitter_consumer_key" translatable="false">1ObP77xbNh1mDaLNUZHmmVzqi</string>
-    <string name="twitter_consumer_secret" translatable="false">TbfcqMZwxEUl60p8kto23xDb1y8CBNxZ1iCXKpSQ0iShmdCzes</string>
-
     <!-- BOTTOM NAVIGATION ITEMS -->
-    <string name="bottom_navigation_map_restaurant_item">Onglet carte</string>
-    <string name="bottom_navigation_list_restaurant_item">Onglet liste</string>
-    <string name="bottom_navigation_workmates_item">Onglet collègues</string>
+    <string name="bottom_navigation_map_restaurant_item">Carte</string>
+    <string name="bottom_navigation_list_restaurant_item">Liste</string>
+    <string name="bottom_navigation_workmates_item">Collègues</string>
 
     <!-- Used in NavigationDrawer -->
     <string name="navigation_drawer_open">Ouvrir le tiroir de navigation</string>
@@ -37,4 +33,8 @@
     <string name="restaurant_closed">Fermé</string>
     <string name="unknown_opening_hours">Non renseigné</string>
     <string name="text_sing_in_btn">Connexion</string>
+    <string name="text_view_mentor_chat_error">Ce fil de discussion ne contient pour le moment aucun message&#8230;</string>
+    <string name="button_title_mentor_chat_activity">ENVOYER</string>
+    <string name="error_not_connected">Vous devez vous connecter !</string>
+    <string name="text_input_title_mentor_chat_activity">Composer votre message</string>
 </resources>

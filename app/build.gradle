@@ -19,6 +19,7 @@ android {
         resValue("string", "GOOGLE_WEB_API_KEY", GOOGLE_WEB_API_KEY)
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
     }
 
     buildTypes {

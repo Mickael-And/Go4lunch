@@ -54,6 +54,7 @@ import com.mickael.go4lunch.R;
 import com.mickael.go4lunch.di.ViewModelFactory;
 import com.mickael.go4lunch.notifications.AlarmReceiver;
 import com.mickael.go4lunch.ui.SettingsDialogFragment;
+import com.mickael.go4lunch.ui.chat.ChatActivity;
 import com.mickael.go4lunch.ui.main.MainActivity;
 import com.mickael.go4lunch.ui.restaurantdetails.RestaurantDetailsActivity;
 
@@ -288,6 +289,15 @@ public class MapActivity extends DaggerAppCompatActivity {
                     break;
                 case R.id.navigation_user_logout_item:
                     this.signOutUser();
+                    break;
+
+                case R.id.navigation_user_chat_item:
+                    if (this.viewModel.isCurrentUserLOgged()) {
+                        Intent intent = new Intent(this, ChatActivity.class);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(this, getString(R.string.error_not_connected), Toast.LENGTH_SHORT).show();
+                    }
                     break;
                 default:
                     break;

@@ -69,7 +69,6 @@ public class MainActivity extends DaggerAppCompatActivity {
         List<AuthUI.IdpConfig> providers = Arrays.asList(
                 new AuthUI.IdpConfig.EmailBuilder().build(),
                 new AuthUI.IdpConfig.GoogleBuilder().build(),
-                new AuthUI.IdpConfig.TwitterBuilder().build(),
                 new AuthUI.IdpConfig.FacebookBuilder().build());
 
         startActivityForResult(AuthUI.getInstance()

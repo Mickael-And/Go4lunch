@@ -7,6 +7,11 @@
         android:title="YOUR LUNCH" />
 
     <item
+        android:id="@+id/navigation_user_chat_item"
+        android:icon="@drawable/ic_chat_white_24dp"
+        android:title="CHAT" />
+
+    <item
         android:id="@+id/navigation_user_settings_item"
         android:icon="@drawable/ic_settings_white_24dp"
         android:title="SETTINGS" />

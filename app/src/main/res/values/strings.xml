@@ -3,10 +3,6 @@
     <string name="facebook_application_id" translatable="false">310405193271096</string>
     <string name="facebook_login_protocol_scheme" translatable="false">fb310405193271096</string>
 
-    <!-- Twitter consumer key and secret -->
-    <string name="twitter_consumer_key" translatable="false">1ObP77xbNh1mDaLNUZHmmVzqi</string>
-    <string name="twitter_consumer_secret" translatable="false">TbfcqMZwxEUl60p8kto23xDb1y8CBNxZ1iCXKpSQ0iShmdCzes</string>
-
     <!-- BOTTOM NAVIGATION ITEMS -->
     <string name="bottom_navigation_map_restaurant_item">Map View</string>
     <string name="bottom_navigation_list_restaurant_item">List View</string>
@@ -36,4 +32,10 @@
     <string name="restaurant_closed">Closed</string>
     <string name="unknown_opening_hours">Not specified</string>
     <string name="text_sing_in_btn">Sign in</string>
+    <string name="text_view_mentor_chat_error">This thread does not currently contain any messages&#8230;</string>
+    <string name="button_title_mentor_chat_activity">SEND</string>
+    <string name="error_not_connected">You must log in !</string>
+    <string name="text_input_title_mentor_chat_activity">Compose your message</string>
+
+
 </resources>
