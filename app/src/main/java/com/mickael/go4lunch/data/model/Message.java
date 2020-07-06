@@ -1,11 +1,14 @@
 package com.mickael.go4lunch.data.model;
 
+import com.google.firebase.firestore.ServerTimestamp;
+
 import java.util.Date;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.ToString;
 import lombok.experimental.FieldDefaults;
 
 /**
@@ -15,6 +18,7 @@ import lombok.experimental.FieldDefaults;
 @Setter
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@ToString(of = {"message", "dateCreated", "userSender"})
 public class Message {
 
     /**
@@ -25,6 +29,7 @@ public class Message {
     /**
      * Creation date.
      */
+    @ServerTimestamp
     Date dateCreated;
 
     /**

@@ -5,54 +5,6 @@
     android:layout_height="match_parent"
     app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <!-- BUTTONS CHAT CONTAINER -->
-    <LinearLayout
-        android:id="@+id/activity_mentor_chat_buttons_container"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        app:layout_constraintBottom_toTopOf="@id/activity_mentor_chat_recycler_view_container"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="spread_inside">
-
-        <!-- BUTTON CHAT ANDROID -->
-        <ImageButton
-            android:id="@+id/activity_mentor_chat_android_chat_button"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="wrap_content"
-            android:layout_height="50dip"
-            android:layout_weight="1"
-            android:background="@color/colorGreen"
-            android:tag="10"
-            app:srcCompat="@drawable/ic_android_white_24dp" />
-
-        <!-- BUTTON CHAT FIREBASE -->
-        <ImageButton
-            android:id="@+id/activity_mentor_chat_firebase_chat_button"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="wrap_content"
-            android:layout_height="50dip"
-            android:layout_weight="1"
-            android:background="@color/colorSandLight"
-            android:tag="20"
-            app:srcCompat="@drawable/ic_cloud_white_24dp" />
-
-        <!-- BUTTON CHAT BUG -->
-        <ImageButton
-            android:id="@+id/activity_mentor_chat_bug_chat_button"
-            style="@style/Widget.AppCompat.Button.Borderless"
-            android:layout_width="wrap_content"
-            android:layout_height="50dip"
-            android:layout_weight="1"
-            android:background="@color/colorSand"
-            android:tag="30"
-            app:srcCompat="@drawable/ic_bug_report_white_24dp" />
-
-    </LinearLayout>
-
-
     <!-- RECYCLER VIEW CONTAINER -->
     <LinearLayout
         android:id="@+id/activity_mentor_chat_recycler_view_container"
@@ -62,7 +14,7 @@
         app:layout_constraintBottom_toTopOf="@id/activity_mentor_chat_add_message_container"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/activity_mentor_chat_buttons_container">
+        app:layout_constraintTop_toTopOf="parent">
 
         <!-- MESSAGE RECYCLER VIEW EMPTY -->
         <TextView

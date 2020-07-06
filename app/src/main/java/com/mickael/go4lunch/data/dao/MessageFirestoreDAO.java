@@ -2,7 +2,6 @@ package com.mickael.go4lunch.data.dao;
 
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.mickael.go4lunch.data.model.Message;
@@ -22,20 +21,17 @@ public class MessageFirestoreDAO {
      *
      * @return the reference of the collection
      */
-    public static CollectionReference getMessagesCollection() {
+    public static CollectionReference getMessagessCollection() {
         return FirebaseFirestore.getInstance().collection(COLLECTION_NAME);
     }
 
     /**
-     * Get all message in a chat.
+     * Get all messages.
      *
-     * @param chat chat choosen
      * @return query
      */
-    public static Query getAllMessageForChat(String chat) {
-        return ChatFirestoreDAO.getChatsCollection()
-                .document(chat)
-                .collection(COLLECTION_NAME)
+    public static Query getAllMessages() {
+        return MessageFirestoreDAO.getMessagessCollection()
                 .orderBy("dateCreated")
                 .limit(50);
     }
@@ -43,13 +39,11 @@ public class MessageFirestoreDAO {
     /**
      * Create a message.
      *
-     * @param chat    chat choosen
      * @param message message to create
      * @return task
      */
-    public static Task<DocumentReference> createMessage(String chat, Message message) {
-        return ChatFirestoreDAO.getChatsCollection().document(chat)
-                .collection(COLLECTION_NAME)
-                .add(message);
+    public static Task<Void> createMessage(Message message) {
+        return MessageFirestoreDAO.getMessagessCollection().document()
+                .set(message);
     }
 }

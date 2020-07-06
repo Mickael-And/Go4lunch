@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -25,6 +24,8 @@ import com.mickael.go4lunch.data.dao.MessageFirestoreDAO;
 import com.mickael.go4lunch.data.dao.UserFirestoreDAO;
 import com.mickael.go4lunch.data.model.Message;
 import com.mickael.go4lunch.data.model.User;
+
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,12 +48,6 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.Liste
     private ChatAdapter mentorChatAdapter;
     @Nullable
     private User modelCurrentUser;
-    private String currentChatName;
-
-    // STATIC DATA FOR CHAT (3)
-    private static final String CHAT_NAME_ANDROID = "android";
-    private static final String CHAT_NAME_BUG = "bug";
-    private static final String CHAT_NAME_FIREBASE = "firebase";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +58,7 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.Liste
         this.configureStatusBar();
         this.configureToolbar();
 
-        this.configureRecyclerView(CHAT_NAME_ANDROID);
+        this.configureRecyclerView();
         this.getCurrentUserFromFirestore();
     }
 
@@ -93,47 +88,19 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.Liste
     @OnClick(R.id.activity_mentor_chat_send_button)
     public void onClickSendMessage() {
         Message message = new Message(this.editTextMessage.getText().toString(), this.modelCurrentUser);
-        switch (this.currentChatName) {
-            case CHAT_NAME_ANDROID:
-                this.createFirestoreMessage(CHAT_NAME_ANDROID, message);
-                break;
-            case CHAT_NAME_BUG:
-                this.createFirestoreMessage(CHAT_NAME_BUG, message);
-                break;
-            case CHAT_NAME_FIREBASE:
-                this.createFirestoreMessage(CHAT_NAME_FIREBASE, message);
-                break;
-        }
+        this.createFirestoreMessage(message);
         this.editTextMessage.setText("");
     }
 
     /**
      * Create the message in firestore.
      *
-     * @param chat    chat choosen
      * @param message message to create
      */
-    private void createFirestoreMessage(String chat, Message message) {
-        MessageFirestoreDAO.createMessage(chat, message).addOnSuccessListener(documentReference -> {
-            Log.d(this.getClass().getSimpleName(), "Message written with ID: " + documentReference.getId());
+    private void createFirestoreMessage(Message message) {
+        MessageFirestoreDAO.createMessage(message).addOnSuccessListener(aVoid -> {
+            Log.d(this.getClass().getSimpleName(), String.format(Locale.getDefault(), "Message %s is written", message.toString()));
         });
-    }
-
-
-    @OnClick({R.id.activity_mentor_chat_android_chat_button, R.id.activity_mentor_chat_firebase_chat_button, R.id.activity_mentor_chat_bug_chat_button})
-    public void onClickChatButtons(ImageButton imageButton) {
-        // 8 - Re-Configure the RecyclerView depending chosen chat
-        switch (Integer.valueOf(imageButton.getTag().toString())) {
-            case 10:
-                this.configureRecyclerView(CHAT_NAME_ANDROID);
-                break;
-            case 20:
-                this.configureRecyclerView(CHAT_NAME_FIREBASE);
-                break;
-            case 30:
-                this.configureRecyclerView(CHAT_NAME_BUG);
-                break;
-        }
     }
 
     // --------------------
@@ -148,11 +115,9 @@ public class ChatActivity extends AppCompatActivity implements ChatAdapter.Liste
     // UI
     // --------------------
     // 5 - Configure RecyclerView with a Query
-    private void configureRecyclerView(String chatName) {
-        //Track current chat name
-        this.currentChatName = chatName;
+    private void configureRecyclerView() {
         //Configure Adapter & RecyclerView
-        this.mentorChatAdapter = new ChatAdapter(generateOptionsForAdapter(MessageFirestoreDAO.getAllMessageForChat(this.currentChatName)), Glide.with(this), this, FirebaseAuth.getInstance().getCurrentUser().getUid());
+        this.mentorChatAdapter = new ChatAdapter(generateOptionsForAdapter(MessageFirestoreDAO.getAllMessages()), Glide.with(this), this, FirebaseAuth.getInstance().getCurrentUser().getUid());
         mentorChatAdapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {
