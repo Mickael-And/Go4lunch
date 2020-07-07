@@ -11,6 +11,8 @@ import com.mickael.go4lunch.data.dao.UserFirestoreDAO;
 import com.mickael.go4lunch.data.model.User;
 import com.mickael.go4lunch.data.repository.AppRepository;
 
+import java.util.Calendar;
+
 import javax.inject.Inject;
 
 import lombok.Getter;
@@ -81,5 +83,19 @@ public class MapActivityViewModel extends ViewModel {
      */
     Boolean isCurrentUserLOgged() {
         return (this.getFirebaseUser() != null);
+    }
+
+    /**
+     * Create a calendar with the hour for notifications.
+     *
+     * @return time for notifications
+     */
+    public Calendar getTimeForNotifications() {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.HOUR_OF_DAY, 12);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        return calendar;
     }
 }

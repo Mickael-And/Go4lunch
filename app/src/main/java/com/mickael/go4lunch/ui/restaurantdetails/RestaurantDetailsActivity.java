@@ -15,7 +15,6 @@ import com.bumptech.glide.Glide;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textview.MaterialTextView;
-import com.mickael.go4lunch.BuildConfig;
 import com.mickael.go4lunch.R;
 import com.mickael.go4lunch.data.model.Restaurant;
 import com.mickael.go4lunch.data.model.User;
@@ -139,20 +138,9 @@ public class RestaurantDetailsActivity extends DaggerAppCompatActivity {
         if (restaurant != null) {
             this.updateHeaderPhoto(restaurant);
             this.restaurantName.setText(restaurant.getName());
-            this.restaurantRating.setRating(this.updateRestaurantRating(restaurant.getRating()));
+            this.restaurantRating.setRating(this.viewModel.updateRestaurantRating(restaurant.getRating()));
             this.restaurantAddress.setText(restaurant.getVicinity());
         }
-    }
-
-    /**
-     * Transforms the restaurant ratio to 3 stars.
-     *
-     * @param rating the ratio in 5 stars
-     * @return the ratio in 3 stars
-     */
-    private float updateRestaurantRating(String rating) {
-        float restaurantRating = Float.parseFloat(rating);
-        return (3 * restaurantRating) / 5;
     }
 
     /**
@@ -162,12 +150,8 @@ public class RestaurantDetailsActivity extends DaggerAppCompatActivity {
      */
     private void updateHeaderPhoto(Restaurant restaurant) {
         if (restaurant.getPhotos() != null) {
-            String url = String.format(Locale.getDefault(), "https://maps.googleapis.com/maps/api/place/photo?" +
-                    "maxheight=1600" +
-                    "&photoreference=%s" +
-                    "&key=%s", restaurant.getPhotos().get(0).getPhotoReference(), BuildConfig.GOOGLE_WEB_API_KEY);
             Glide.with(this)
-                    .load(url)
+                    .load(this.viewModel.getRestaurantPhotoUrl(restaurant))
                     .centerCrop()
                     .into(this.appBarPicture);
         }

@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.mickael.go4lunch.BuildConfig;
 import com.mickael.go4lunch.data.dao.UserFirestoreDAO;
 import com.mickael.go4lunch.data.model.Restaurant;
 import com.mickael.go4lunch.data.model.User;
@@ -206,5 +207,29 @@ public class RestaurantDetailsViewModel extends ViewModel {
             throw new Exception();
         }
         return isLike;
+    }
+
+    /**
+     * Transforms the restaurant ratio to 3 stars.
+     *
+     * @param rating the ratio in 5 stars
+     * @return the ratio in 3 stars
+     */
+    public float updateRestaurantRating(String rating) {
+        float restaurantRating = Float.parseFloat(rating);
+        return (3 * restaurantRating) / 5;
+    }
+
+    /**
+     * Buil the URL to add the restaurant photo.
+     *
+     * @param restaurant restaurant where we want the photo
+     * @return build url
+     */
+    public String getRestaurantPhotoUrl(Restaurant restaurant) {
+        return String.format(Locale.getDefault(), "https://maps.googleapis.com/maps/api/place/photo?" +
+                "maxheight=1600" +
+                "&photoreference=%s" +
+                "&key=%s", restaurant.getPhotos().get(0).getPhotoReference(), BuildConfig.GOOGLE_WEB_API_KEY);
     }
 }
